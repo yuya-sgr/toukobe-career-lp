@@ -17,6 +17,9 @@ import {
   UserCheck,
   Gift,
   ChevronsRight,
+  UserPlus,
+  Mail,
+  ArrowDown
 } from 'lucide-react';
 
 const App = () => {
@@ -70,39 +73,37 @@ const App = () => {
     setOpenFaq(openFaq === index ? null : index);
   };
 
-  // Reusable Rectangular CTA Button Component
-  const RectCtaButton = ({ color, badgeText, subText, mainText, onClick }) => {
-    const isGreen = color === 'green';
-    const bgClass = isGreen ? 'bg-[#06C755]' : 'bg-[#FF7B44]';
-    const textClass = isGreen ? 'text-[#06C755]' : 'text-[#FF7B44]';
-    const shadowClass = 'shadow-[4px_4px_0px_0px_#333]';
-
+  // --------------------------------------------------------------------------
+  // Refactored Single CTA Button Component (Green Only)
+  // --------------------------------------------------------------------------
+  const MainCtaButton = ({ onClick, className = "" }) => {
     return (
       <button
         onClick={onClick}
-        className={`group relative w-full max-w-[340px] h-[72px] flex items-stretch text-white transition-transform active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#333] ${bgClass} ${shadowClass}`}
+        className={`group relative w-full max-w-[360px] h-[80px] flex items-stretch text-white transition-transform active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#145a32] bg-[#06C755] shadow-[4px_4px_0px_0px_#145a32] ${className}`}
       >
         {/* Badge */}
-        <div className="absolute -top-3 -left-3 w-12 h-12 bg-[#333] rounded-full flex items-center justify-center text-white text-xs font-bold border-2 border-white z-10 tracking-wider">
-          {badgeText}
+        <div className="absolute -top-3 -left-3 w-14 h-14 bg-[#333] rounded-full flex flex-col items-center justify-center text-white text-[10px] font-bold border-2 border-white z-10 tracking-widest leading-tight shadow-md">
+          <span>完全</span>
+          <span>無料</span>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col items-center justify-center py-1 pl-6 pr-2">
-          <div className={`bg-white ${textClass} text-[10px] md:text-[11px] font-bold px-3 py-0.5 rounded-full mb-1 tracking-wide`}>
-            {subText}
+        {/* Main Content (Icon Removed) */}
+        <div className="flex-1 flex flex-col items-center justify-center py-2 px-1 md:px-2 pl-8">
+          <div className="bg-white/20 text-white text-[10px] md:text-xs font-bold px-3 py-0.5 rounded-full mb-1.5 tracking-wider">
+            簡単1分で登録完了
           </div>
-          <div className="text-base md:text-lg font-bold leading-none tracking-tight">
-            {mainText}
+          <div className="text-base md:text-xl font-black leading-none tracking-tight whitespace-nowrap">
+            LINEで限定イベントを見る
           </div>
         </div>
 
         {/* Right Arrow Area */}
-        <div className="w-14 relative flex flex-col items-center justify-center overflow-hidden">
+        <div className="w-12 relative flex flex-col items-center justify-center overflow-hidden border-l border-white/10">
           <div className="absolute inset-0 bg-black/10 -skew-x-12 origin-bottom-right scale-150 translate-x-2" />
           <div className="relative z-10 flex flex-col items-center">
-            <span className="text-[9px] font-bold font-english mb-0.5 tracking-tighter opacity-90">CLICK!</span>
-            <ChevronsRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+            <span className="text-[8px] font-bold font-english mb-0.5 tracking-tighter opacity-90">CLICK!</span>
+            <ChevronsRight size={22} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
           </div>
         </div>
       </button>
@@ -110,16 +111,15 @@ const App = () => {
   };
 
   return (
-    <div className="antialiased text-[#111111] font-sans bg-white selection:bg-[#FF7B44] selection:text-white">
+    <div className="antialiased text-[#111111] font-sans bg-white selection:bg-[#06C755] selection:text-white">
       {/* Style + Design Tokens */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
 
         :root {
           --manabi-main: #FF7B44;
+          --manabi-green: #06C755;
           --manabi-black: #111111;
-          --manabi-dark: #333333;
-          --manabi-light: #F5F5F5;
           --border-gray: #E0E0E0;
         }
 
@@ -176,13 +176,6 @@ const App = () => {
         }
         .animate-scroll-line { animation: scrollLine 2s ease-in-out infinite; }
 
-        /* Minimal Card */
-        .card-outline {
-          background: #fff;
-          border: 1px solid var(--border-gray);
-        }
-
-        /* Horizontal scroll (events) */
         .toukobe-scroll {
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
@@ -213,7 +206,6 @@ const App = () => {
               {[
                 { label: 'トウコベキャリアとは', id: 'concept' },
                 { label: '特徴', id: 'features' },
-                { label: '流れ', id: 'flow' },
                 { label: 'よくある質問', id: 'faq' },
               ].map((item) => (
                 <button
@@ -227,45 +219,24 @@ const App = () => {
               ))}
             </div>
             
-            {/* Header CTA Buttons */}
-            <div className="flex h-full items-center gap-0 ml-4">
-              {/* Left Button (Event - Orange) */}
+            {/* Header CTA Button (2-line layout, shorter width) */}
+            <div className="flex h-full items-center ml-4 py-1">
               <button
                 onClick={() => scrollToSection('contact')}
                 className="group h-full flex items-stretch shadow-sm hover:opacity-95 transition-opacity"
               >
                 {/* Side Label */}
-                <div className="w-9 bg-[#E06A3A] text-white flex flex-col items-center justify-center text-sm font-bold leading-tight">
+                <div className="w-10 bg-[#05B24A] text-white flex flex-col items-center justify-center text-xs font-bold leading-tight">
                   <span>無</span>
                   <span>料</span>
                 </div>
                 {/* Main Content */}
-                <div className="flex-1 bg-[#FF7B44] text-white flex items-center justify-between px-5">
+                <div className="flex-1 bg-[#06C755] text-white flex items-center justify-between px-3 md:px-4">
                   <div className="flex flex-col items-start justify-center h-full space-y-0.5 whitespace-nowrap">
-                    <span className="text-sm font-bold leading-tight">イベントを</span>
-                    <span className="text-sm font-bold leading-tight">確認する</span>
+                    <span className="text-[10px] font-bold leading-tight">LINEで</span>
+                    <span className="text-sm font-bold leading-tight">限定イベントを確認</span>
                   </div>
-                  <ChevronsRight size={18} strokeWidth={3} className="ml-1 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </button>
-
-              {/* Right Button (LINE - Green) */}
-              <button
-                onClick={() => scrollToSection('contact')}
-                className="group h-full flex items-stretch shadow-sm hover:opacity-95 transition-opacity"
-              >
-                {/* Side Label */}
-                <div className="w-9 bg-[#05B24A] text-white flex flex-col items-center justify-center text-sm font-bold leading-tight">
-                  <span>無</span>
-                  <span>料</span>
-                </div>
-                {/* Main Content */}
-                <div className="flex-1 bg-[#06C755] text-white flex items-center justify-between px-5">
-                  <div className="flex flex-col items-start justify-center h-full space-y-0.5 whitespace-nowrap">
-                    <span className="text-sm font-bold leading-tight">LINEで</span>
-                    <span className="text-sm font-bold leading-tight">限定オファー</span>
-                  </div>
-                  <ChevronsRight size={18} strokeWidth={3} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                  <ChevronsRight size={20} strokeWidth={3} className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </button>
             </div>
@@ -275,7 +246,7 @@ const App = () => {
 
       {/* Hero Section (FV) */}
       <section className="relative h-[100dvh] w-full overflow-hidden">
-        {/* SP Logo (Absolute Left Top) */}
+        {/* SP Logo */}
         <div className="md:hidden absolute top-6 left-6 z-30">
           <img
             src="https://www.toukobe.com/wp-content/uploads/Group-164.png"
@@ -289,81 +260,50 @@ const App = () => {
 
         {/* Color accents */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Soft gradient wash */}
           <div className="absolute -top-24 -right-24 w-[520px] h-[520px] rounded-full blur-[90px] opacity-70 bg-[radial-gradient(circle_at_center,_rgba(255,138,50,0.35),_rgba(255,255,255,0)_60%)]" />
           <div className="absolute -bottom-40 -left-40 w-[560px] h-[560px] rounded-full blur-[110px] opacity-70 bg-[radial-gradient(circle_at_center,_rgba(56,82,227,0.20),_rgba(255,255,255,0)_60%)]" />
-
-          {/* Polygon layers */}
           <div className="absolute inset-0">
-            <div
-              className="absolute left-[-12%] top-[18%] w-[120%] h-[60%] bg-[#FFF2EB]"
-              style={{ clipPath: 'polygon(0% 35%, 100% 5%, 100% 70%, 0% 95%)' }}
-            />
-            <div
-              className="absolute left-[-10%] top-[32%] w-[120%] h-[55%] bg-[#FFE2D0] opacity-80"
-              style={{ clipPath: 'polygon(0% 55%, 100% 15%, 100% 85%, 0% 100%)' }}
-            />
-            <div
-              className="absolute right-[-20%] top-[22%] w-[70%] h-[70%] bg-[#EAF0FF] opacity-55"
-              style={{ clipPath: 'polygon(18% 0%, 100% 18%, 82% 100%, 0% 82%)' }}
-            />
+            <div className="absolute left-[-12%] top-[18%] w-[120%] h-[60%] bg-[#FFF2EB]" style={{ clipPath: 'polygon(0% 35%, 100% 5%, 100% 70%, 0% 95%)' }} />
+            <div className="absolute left-[-10%] top-[32%] w-[120%] h-[55%] bg-[#FFE2D0] opacity-80" style={{ clipPath: 'polygon(0% 55%, 100% 15%, 100% 85%, 0% 100%)' }} />
+            <div className="absolute right-[-20%] top-[22%] w-[70%] h-[70%] bg-[#EAF0FF] opacity-55" style={{ clipPath: 'polygon(18% 0%, 100% 18%, 82% 100%, 0% 82%)' }} />
           </div>
         </div>
 
         <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 md:px-10 h-full">
           <div className="w-full h-full grid grid-cols-1 md:grid-cols-12 gap-10">
-            {/* Left copy: Center aligned for focus */}
+            {/* Left copy */}
             <div className="md:col-span-7 h-full flex flex-col justify-center pt-0 md:pt-32 md:pb-20 relative z-20">
-              
-              {/* Copy (Brand removed, Sizes increased) */}
               <div className="animate-fade-in-up">
                 <p className="text-3xl sm:text-4xl md:text-3xl font-black text-[#111111] tracking-tight mb-3 md:mb-4">
                   講師限定
                 </p>
-                {/* Responsive font size to prevent line break and overflow */}
                 <h1 className="text-[11vw] sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.15] md:leading-[1.05] tracking-tight text-[#FF7B44] whitespace-nowrap">
                   就活支援プログラム
                 </h1>
               </div>
 
-              {/* CTA */}
+              {/* CTA Area - Unified */}
               <div className="mt-12 md:mt-16 animate-fade-in-up" style={{ animationDelay: '0.22s' }}>
-                {/* Badges */}
                 <div className="flex flex-wrap gap-2 mb-8 justify-start">
                   <span className="inline-flex items-center gap-1 bg-gray-100 border border-gray-200 text-gray-700 text-[11px] md:text-xs font-bold px-3 py-1.5 rounded-full">
-                    <Check size={12} className="text-[#FF7B44]" strokeWidth={3} />
+                    <Check size={12} className="text-[#06C755]" strokeWidth={3} />
                     完全無料
                   </span>
-                  <span className="inline-flex items-center gap-1 bg-orange-50 border border-orange-100 text-[#FF7B44] text-[11px] md:text-xs font-bold px-3 py-1.5 rounded-full">
-                    <Check size={12} className="text-[#FF7B44]" strokeWidth={3} />
+                  <span className="inline-flex items-center gap-1 bg-green-50 border border-green-100 text-[#06C755] text-[11px] md:text-xs font-bold px-3 py-1.5 rounded-full">
+                    <Check size={12} className="text-[#06C755]" strokeWidth={3} />
                     限定ルート多数
                   </span>
                 </div>
 
-                {/* Rectangular Buttons (FV) */}
                 <div className="flex flex-col sm:flex-row flex-wrap gap-6">
-                  <RectCtaButton
-                    color="orange"
-                    badgeText="無料"
-                    subText="まずはここから"
-                    mainText="イベントを確認する"
-                    onClick={() => scrollToSection('contact')}
-                  />
-                  <RectCtaButton
-                    color="green"
-                    badgeText="無料"
-                    subText="簡単1分で完了"
-                    mainText="LINEで限定オファー"
-                    onClick={() => scrollToSection('contact')}
-                  />
+                  <MainCtaButton onClick={() => scrollToSection('contact')} />
                 </div>
               </div>
             </div>
 
-            {/* Right visual: Hidden on Mobile, Visible on Desktop */}
+            {/* Right visual */}
             <div className="hidden md:flex md:col-span-5 relative h-full items-end justify-end pointer-events-none">
               <div className="relative w-full h-[85%] translate-y-14">
-                {/* Image */}
                 <div className="absolute inset-0 overflow-visible mask-reveal scroll-trigger">
                   <img
                     src="https://www.toukobe.com/wp-content/uploads/image-16.png"
@@ -371,13 +311,7 @@ const App = () => {
                     className="w-full h-full object-contain object-bottom scale-[1.35] origin-bottom-right"
                   />
                 </div>
-
-                {/* Bottom color wedge */}
-                <div
-                  className="absolute -bottom-10 -right-10 w-[80%] h-[50%] bg-[#FF7B44] opacity-[0.10] z-[-1]"
-                  style={{ clipPath: 'polygon(20% 0%, 100% 20%, 80% 100%, 0% 80%)' }}
-                  aria-hidden="true"
-                />
+                <div className="absolute -bottom-10 -right-10 w-[80%] h-[50%] bg-[#FF7B44] opacity-[0.10] z-[-1]" style={{ clipPath: 'polygon(20% 0%, 100% 20%, 80% 100%, 0% 80%)' }} aria-hidden="true" />
               </div>
             </div>
           </div>
@@ -389,108 +323,11 @@ const App = () => {
         </div>
       </section>
 
-      {/* Upcoming Event Section (cards; horizontal scroll-ready) */}
-      <section className="bg-white py-16 md:py-20 border-b border-gray-100">
-        <div className="max-w-[1200px] mx-auto px-6">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl md:text-2xl font-bold text-black">新着エントリー</h2>
-          </div>
+      {/* ---------------------------------------------------------------------
+          Refactored Section Order: Problem -> Solution -> Features -> Comparison -> Event
+         --------------------------------------------------------------------- */}
 
-          {/* Scroll container */}
-          {(() => {
-            const events = [
-              {
-                id: 'leverages-20260315',
-                deadline: '【締切】2/28（土）23:59',
-                company: 'レバレジーズ',
-                title: '【参加謝礼3,000円】Leverages特別企業説明会',
-                desc: '年商1000億規模の急成長企業「レバレジーズ」が全面協力。就活の進め方レクチャー、GD練習、座談会。',
-                meta: '90min / GD練習 / 座談会 / オンライン',
-                dateLabel: '2026.03.15',
-                time: '18:00 - 19:30',
-                place: 'オンライン(Zoom)',
-                image:
-                  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
-                logo:
-                  'https://www.toukobe.com/wp-content/uploads/%E3%83%AC%E3%83%90%E3%83%AC%E3%82%B8%E3%83%BC%E3%82%BA%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE-%E5%BA%83%E5%A0%B1%E6%8B%85%E5%BD%93_id-XN67gio_0.png',
-              },
-            ];
-
-            return (
-              <div className="relative">
-                <div className="flex gap-6 overflow-x-auto pb-3 snap-x snap-mandatory toukobe-scroll">
-                  {events.map((e) => (
-                    <div
-                      key={e.id}
-                      className="min-w-[320px] sm:min-w-[360px] md:min-w-[420px] bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start"
-                    >
-                      {/* Deadline + wish */}
-                      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                        <p className="text-sm font-bold text-[#FF7B44]">{e.deadline}</p>
-                      </div>
-
-                      {/* Image */}
-                      <div className="relative">
-                        <div className="h-[150px] md:h-[170px] bg-gray-50 overflow-hidden">
-                          <img
-                            src={e.image}
-                            alt={e.title}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
-                        </div>
-
-                        {/* Logo badge */}
-                        <div className="absolute left-4 top-4 bg-white border border-gray-200 rounded-lg p-2 shadow-sm">
-                          <img
-                            src={e.logo}
-                            alt={`${e.company} ロゴ`}
-                            className="h-6 w-auto object-contain"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Body */}
-                      <div className="px-5 py-5">
-                        <p className="text-xs font-bold text-gray-500">{e.company}</p>
-                        <h3 className="mt-2 text-base md:text-lg font-bold text-black leading-snug">
-                          {e.title}
-                        </h3>
-                        <p className="mt-3 text-xs text-gray-500 leading-relaxed">{e.desc}</p>
-                        <p className="mt-4 text-xs text-gray-400 font-bold">{e.meta}</p>
-
-                        {/* Action */}
-                        <div className="mt-5 flex items-center justify-between">
-                          <div className="text-xs text-gray-500 font-bold">
-                            <span className="font-english mr-2">{e.dateLabel}</span>
-                            <span className="mr-2">{e.time}</span>
-                            <span className="inline-flex items-center gap-1">
-                              <Globe size={14} /> {e.place}
-                            </span>
-                          </div>
-                          <button
-                            onClick={() => scrollToSection('contact')}
-                            className="inline-flex items-center gap-2 text-sm font-bold text-[#FF7B44] hover:opacity-70 transition-opacity"
-                          >
-                            詳細
-                            <ArrowRight size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Hint gradient (right) */}
-                <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
-              </div>
-            );
-          })()}
-        </div>
-      </section>
-
-      {/* Problem Section */}
+      {/* Problem Section (Refined Text) */}
       <section className="py-32 bg-[#F5F5F5] relative">
         <div className="max-w-[1000px] mx-auto px-6">
           <div className="mb-20 scroll-trigger text-reveal">
@@ -500,12 +337,32 @@ const App = () => {
               そう思っていませんか？
             </h2>
             <p className="mt-6 text-sm md:text-base text-gray-600 leading-loose font-medium max-w-xl">
-              優秀な学生ほど、<span className="text-[#FF7B44] font-bold border-b-2 border-[#FF7B44] pb-1">時間不足</span>という構造的な制約に直面します。
+              テスト勉強や授業準備に追われ、ESを書く時間がない...。<br />
+              優秀な学生ほど、<span className="text-[#FF7B44] font-bold border-b-2 border-[#FF7B44] pb-1">時間不足</span>という構造的な制約に直面しています。
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-l border-gray-300 scroll-trigger text-reveal">
-            {[{ no: '01', icon: <Clock size={22} />, title: '時間が足りない', desc: '研究・授業・指導バイトで忙しく、就活に割ける時間が物理的に足りない。' },{ no: '02', icon: <HelpCircle size={22} />, title: 'ガクチカの不安', desc: '「家庭教師」の経験だけで、難関企業の選考を勝ち抜けるか不安がある。' },{ no: '03', icon: <TrendingUp size={22} />, title: '出遅れ感', desc: '周りはまだ動いていないが、ネット上の情報を見ると焦りを感じてしまう。' }].map((c) => (
+            {[
+              { 
+                no: '01', 
+                icon: <Clock size={22} />, 
+                title: '圧倒的な時間不足', 
+                desc: '大学の授業やテスト勉強に加え、講師業務も重なり、就活に割けるまとまった時間が取れない。' 
+              },
+              { 
+                no: '02', 
+                icon: <HelpCircle size={22} />, 
+                title: '「ガクチカ」の不安', 
+                desc: '「家庭教師」の経験だけで、難関企業の選考を勝ち抜けるか不安。指導実績をどうアピールすべきか分からない。' 
+              },
+              { 
+                no: '03', 
+                icon: <TrendingUp size={22} />, 
+                title: '出遅れ感と焦り', 
+                desc: '周りはインターンに行き始めているが、自分は生徒のために時間を割いている。ネットの情報を見ると焦りを感じてしまう。' 
+              }
+            ].map((c) => (
               <div key={c.no} className="bg-white p-12 border-r border-b border-gray-300 group hover:bg-black transition-colors duration-500">
                 <div className="text-[#FF7B44] text-3xl font-english font-bold mb-6 group-hover:text-white transition-colors">{c.no}</div>
                 <h3 className="text-lg font-bold text-black mb-4 group-hover:text-white transition-colors">{c.title}</h3>
@@ -516,7 +373,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Solution Section (concept) */}
+      {/* Solution Section (Authority & Empathy) */}
       <section id="concept" className="py-24 md:py-40 bg-white relative">
         <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div className="order-2 md:order-1 relative">
@@ -531,7 +388,6 @@ const App = () => {
           </div>
           <div className="order-1 md:order-2 space-y-12">
             <div className="text-reveal scroll-trigger">
-              {/* Updated Header Style (No Border) */}
               <p className="text-xs font-bold font-english tracking-widest text-gray-400 mb-4">
                 ABOUT
               </p>
@@ -539,12 +395,12 @@ const App = () => {
                 その不安、<br />
                 <span className="text-[#FF7B44] border-b-2 border-[#FF7B44] pb-1">トウコベキャリア</span>が解決します。
               </h2>
-              <p className="text-sm md:text-base text-gray-600 leading-loose font-medium mb-8">
-                トウコベキャリアは、講師のためだけのキャリア形成プラットフォームです。
-                あなたの指導実績を価値ある経験として証明し、本質的な能力を評価するトップ企業へとダイレクトに接続します。
+              <p className="text-sm md:text-base text-gray-600 leading-loose font-medium mb-6">
+                オンライン個別指導塾『トウコベ』が贈る、講師限定のキャリア支援プラットフォームです。
               </p>
-              <p className="text-sm md:text-base text-gray-600 leading-loose font-medium">
-                まだ就活を始めていなくても構いません。必要なのは、最初の一歩です。
+              <p className="text-sm md:text-base text-gray-600 leading-loose font-medium mb-8">
+                あなたの指導実績を価値ある経験として証明し、本質的な能力を評価するトップ企業へとダイレクトに接続します。
+                MBB内定者、メガベンチャー内定者がメンターとして伴走し、忙しいあなたの就活を強力にバックアップします。
               </p>
             </div>
           </div>
@@ -576,7 +432,7 @@ const App = () => {
                 no: '02',
                 icon: <Award size={22} />,
                 title: '指導実績が評価に直結',
-                desc: '指導スコアや合格実績などの実務データを企業へ共有し、書類選考免除などの優遇を受けられます。',
+                desc: '指導実績などの実務データを企業へ共有し、書類選考免除などの優遇を受けられます。',
               },
               {
                 no: '03',
@@ -646,7 +502,6 @@ const App = () => {
                   }`}
                   aria-label="TOUKOBE CAREER"
                 >
-                  {/* Use logo instead of text */}
                   <img
                     src="https://www.toukobe.com/wp-content/uploads/Group-164.png"
                     alt="TOUKOBE CAREER"
@@ -733,7 +588,7 @@ const App = () => {
                         実績が評価される<br className="hidden md:block" />"選ばれた人"の近道
                       </h3>
                       <p className="mt-5 text-sm text-gray-600 leading-loose">
-                        指導実績・スコアなどのデータを評価軸に置き、
+                        指導実績などのデータを評価軸に置き、
                         書類・準備のムダを削ります。選考はスピードと確度を両立。
                       </p>
                     </div>
@@ -785,9 +640,6 @@ const App = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Mini CTA: Closing area */}
-                      {/* Note: This section's buttons are also replaced in the final section below */}
                     </div>
                   </div>
                 </div>
@@ -797,52 +649,149 @@ const App = () => {
         </div>
       </section>
 
-      {/* Flow Section */}
-      <section id="flow" className="py-24 md:py-40 bg-white">
+      {/* Moved Upcoming Event Section (Evidence) */}
+      <section className="bg-white py-16 md:py-20 border-b border-gray-100">
         <div className="max-w-[1200px] mx-auto px-6">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-black">新着エントリー</h2>
+          </div>
+
+          {(() => {
+            const events = [
+              {
+                id: 'leverages-20260315',
+                deadline: '【締切】2/5（木）23:59',
+                company: 'レバレジーズ',
+                title: '【参加謝礼3,000円】Leverages特別企業説明会',
+                desc: '年商1000億規模の急成長企業「レバレジーズ」が全面協力。就活の進め方レクチャー、GD練習、座談会。',
+                meta: '90min / GD練習 / 座談会 / オンライン',
+                dateLabel: '2026.03.15',
+                time: '18:00 - 19:30',
+                place: 'オンライン(Zoom)',
+                image:
+                  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+                logo:
+                  'https://www.toukobe.com/wp-content/uploads/%E3%83%AC%E3%83%90%E3%83%AC%E3%82%B8%E3%83%BC%E3%82%BA%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE-%E5%BA%83%E5%A0%B1%E6%8B%85%E5%BD%93_id-XN67gio_0.png',
+              },
+            ];
+
+            return (
+              <div className="relative">
+                <div className="flex gap-6 overflow-x-auto pb-3 snap-x snap-mandatory toukobe-scroll">
+                  {events.map((e) => (
+                    <div
+                      key={e.id}
+                      className="min-w-[320px] sm:min-w-[360px] md:min-w-[420px] bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start"
+                    >
+                      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                        <p className="text-sm font-bold text-[#FF7B44]">{e.deadline}</p>
+                      </div>
+
+                      <div className="relative">
+                        <div className="h-[150px] md:h-[170px] bg-gray-50 overflow-hidden">
+                          <img
+                            src={e.image}
+                            alt={e.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="absolute left-4 top-4 bg-white border border-gray-200 rounded-lg p-2 shadow-sm">
+                          <img
+                            src={e.logo}
+                            alt={`${e.company} ロゴ`}
+                            className="h-6 w-auto object-contain"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="px-5 py-5">
+                        <p className="text-xs font-bold text-gray-500">{e.company}</p>
+                        <h3 className="mt-2 text-base md:text-lg font-bold text-black leading-snug">
+                          {e.title}
+                        </h3>
+                        <p className="mt-3 text-xs text-gray-500 leading-relaxed">{e.desc}</p>
+                        <p className="mt-4 text-xs text-gray-400 font-bold">{e.meta}</p>
+
+                        <div className="mt-5 flex items-center justify-between">
+                          <div className="text-xs text-gray-500 font-bold">
+                            <span className="font-english mr-2">{e.dateLabel}</span>
+                            <span className="mr-2">{e.time}</span>
+                            <span className="inline-flex items-center gap-1">
+                              <Globe size={14} /> {e.place}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => scrollToSection('contact')}
+                            className="inline-flex items-center gap-2 text-sm font-bold text-[#FF7B44] hover:opacity-70 transition-opacity"
+                          >
+                            詳細
+                            <ArrowRight size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
+              </div>
+            );
+          })()}
+        </div>
+      </section>
+
+      {/* Flow Section (Refactored) */}
+      <section id="flow" className="py-24 md:py-40 bg-white">
+        <div className="max-w-[1000px] mx-auto px-6">
           <div className="text-center mb-16 text-reveal scroll-trigger">
             <span className="text-xs font-bold tracking-widest text-gray-400 block mb-4">
               FLOW
             </span>
             <h2 className="text-3xl md:text-5xl font-bold mb-2">ご利用の流れ</h2>
-            <p className="text-sm font-normal text-gray-400">(概要)</p>
+            <p className="text-sm font-normal text-gray-400">(具体的なステップ)</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-reveal scroll-trigger">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4 text-reveal scroll-trigger">
             {[
               {
                 no: '01',
-                title: '会員登録',
-                desc: 'LINEで1分で登録完了。',
-                icon: <UserCheck size={26} />,
+                title: 'LINE友だち追加',
+                desc: 'まずは公式LINEを友だち追加。1分で完了します。',
+                icon: <UserPlus size={28} />,
               },
               {
                 no: '02',
-                title: '限定オファー',
-                desc: 'あなたの実績に応じたオファー。',
-                icon: <FileText size={26} />,
+                title: '限定スカウト・面談',
+                desc: '実績に基づいた特別オファーが届きます。メンターとのキャリア面談も可能。',
+                icon: <Mail size={28} />,
               },
               {
                 no: '03',
-                title: '選考・内定',
-                desc: 'メンターが徹底伴走。',
-                icon: <Award size={26} />,
+                title: '選考対策・内定',
+                desc: 'ES添削や面接対策を徹底サポート。最短ルートで内定を目指します。',
+                icon: <Award size={28} />,
               },
-            ].map((p) => (
-              <div
-                key={p.no}
-                className="bg-[#F8F9FA] rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow duration-300 group cursor-default"
-              >
-                <p className="text-xs font-bold text-gray-400 font-english mb-1">Program</p>
-                <p className="text-3xl font-black font-english text-[#FF7B44] mb-6 group-hover:scale-110 transition-transform">
-                  {p.no}
-                </p>
-                <div className="text-4xl text-gray-300 mb-6 group-hover:text-[#FF7B44] transition-colors duration-300">
-                  {p.icon}
+            ].map((p, index, array) => (
+              <React.Fragment key={p.no}>
+                <div className="relative w-full md:w-1/3 bg-[#F8F9FA] rounded-2xl p-8 flex flex-col items-center text-center hover:shadow-lg transition-all duration-300 group cursor-default border border-transparent hover:border-[#FF7B44]/20 hover:-translate-y-1">
+                  <div className="absolute top-4 left-4 text-xs font-black text-gray-200 font-english text-[40px] leading-none z-0 opacity-50">
+                    {p.no}
+                  </div>
+                  <div className="relative z-10 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 text-[#FF7B44] group-hover:bg-[#FF7B44] group-hover:text-white transition-colors duration-300">
+                    {p.icon}
+                  </div>
+                  <h3 className="relative z-10 text-lg font-bold mb-3 text-[#111111]">{p.title}</h3>
+                  <p className="relative z-10 text-xs text-gray-500 leading-relaxed font-medium">{p.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-[#111111]">{p.title}</h3>
-                <p className="text-xs text-gray-500 leading-relaxed">{p.desc}</p>
-              </div>
+
+                {/* Arrow (Render between items) */}
+                {index < array.length - 1 && (
+                  <div className="text-gray-300 flex-shrink-0">
+                    <ArrowRight size={24} className="hidden md:block" />
+                    <ArrowDown size={24} className="md:hidden" />
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
         </div>
@@ -891,12 +840,16 @@ const App = () => {
                       {isOpen ? '−' : '+'}
                     </span>
                   </button>
+                  {/* Grid transition implementation */}
                   <div
-                    className="overflow-hidden transition-[max-height] duration-400 ease-out"
-                    style={{ maxHeight: isOpen ? '200px' : '0px' }}
+                    className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+                      isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                    }`}
                   >
-                    <div className="pb-8 pl-12 text-sm text-gray-600 leading-loose">
-                      {item.a}
+                    <div className="overflow-hidden">
+                      <div className="pb-8 pl-12 text-sm text-gray-600 leading-loose">
+                        {item.a}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -906,29 +859,14 @@ const App = () => {
         </div>
       </section>
 
-      {/* Closing CTA (Updated: Light orange background & Rect Buttons) */}
+      {/* Closing CTA - Unified */}
       <section
         id="contact"
         className="py-24 md:py-32 px-6 bg-[#FFF2EB] flex flex-col items-center justify-center text-center relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.8),_transparent)] z-0" />
         <div className="text-reveal scroll-trigger w-full flex flex-col items-center relative z-10">
-          <div className="flex flex-col sm:flex-row flex-wrap gap-6 w-full justify-center">
-            <RectCtaButton
-              color="orange"
-              badgeText="無料"
-              subText="まずはここから"
-              mainText="イベントを確認する"
-              onClick={() => scrollToSection('contact')}
-            />
-            <RectCtaButton
-              color="green"
-              badgeText="無料"
-              subText="簡単1分で完了"
-              mainText="LINEで限定オファー"
-              onClick={() => scrollToSection('contact')}
-            />
-          </div>
+          <MainCtaButton onClick={() => scrollToSection('contact')} />
         </div>
       </section>
 
@@ -948,23 +886,18 @@ const App = () => {
         </div>
       </footer>
 
-      {/* Mobile Floating CTA (Updated) */}
+      {/* Mobile Floating CTA - Unified & Full Width */}
       <div
-        className={`fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.08)] z-50 md:hidden flex justify-center gap-2 transition-transform duration-300 ${
+        className={`fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 py-3 shadow-[0_-5px_20px_rgba(0,0,0,0.08)] z-50 md:hidden flex justify-center transition-transform duration-300 ${
           scrolled ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         <button
           onClick={() => scrollToSection('contact')}
-          className="flex-1 bg-[#FF7B44] text-white text-center py-3 rounded-md font-bold text-xs shadow-sm flex items-center justify-center gap-1 active:opacity-80"
+          className="w-full bg-[#06C755] text-white text-center py-4 rounded-lg font-bold text-sm shadow-md flex items-center justify-center gap-2 active:opacity-90 active:scale-[0.98] transition-all"
         >
-          イベントを確認する
-        </button>
-        <button
-          onClick={() => scrollToSection('contact')}
-          className="flex-[1.4] bg-[#06C755] text-white text-center py-3 rounded-md font-bold text-xs shadow-sm flex items-center justify-center gap-1 active:opacity-80"
-        >
-          LINEで限定オファーを受け取る
+          {/* Icon Removed */}
+          <span>LINEで限定イベントを確認</span>
         </button>
       </div>
     </div>

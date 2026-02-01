@@ -76,34 +76,66 @@ const App = () => {
   // --------------------------------------------------------------------------
   // Refactored Single CTA Button Component (Green Only)
   // --------------------------------------------------------------------------
-  const MainCtaButton = ({ onClick, className = "" }) => {
+  const MainCtaButton = ({ onClick, className = "", small = false, mainText = "LINEで限定イベントを見る", showSubtext = true, showBadge = true }) => {
+    const heightClass = small ? "h-[56px]" : "h-[80px]";
+    const badgeSize = small ? "w-12 h-12 text-[9px] -top-2 -left-2" : "w-14 h-14 text-[10px] -top-3 -left-3";
+    const iconBoxWidth = small ? "w-14" : "w-16";
+    const iconSize = small ? 24 : 36;
+    const textSize = small ? "text-lg md:text-xl" : "text-base md:text-xl";
+    const subTextSize = small ? "text-[9px] md:text-[10px] px-2 py-0.5" : "text-[10px] md:text-xs px-3 py-0.5";
+    const arrowBoxWidth = small ? "w-10" : "w-12";
+    const arrowSize = small ? 18 : 22;
+    
+    // Padding logic: 
+    // If showBadge is true, we hide the icon to avoid overlap.
+    // Therefore, we need extra left padding for the content to clear the badge.
+    const contentPadding = showBadge 
+      ? (small ? 'pl-10 pr-1' : 'pl-12 pr-2 md:pl-16') 
+      : 'px-2';
+
     return (
       <button
         onClick={onClick}
-        className={`group relative w-full max-w-[360px] h-[80px] flex items-stretch text-white transition-transform active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#145a32] bg-[#06C755] shadow-[4px_4px_0px_0px_#145a32] ${className}`}
+        className={`group relative w-full max-w-[360px] ${heightClass} flex items-stretch text-white transition-transform active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#145a32] bg-[#06C755] shadow-[4px_4px_0px_0px_#145a32] ${className}`}
       >
         {/* Badge */}
-        <div className="absolute -top-3 -left-3 w-14 h-14 bg-[#333] rounded-full flex flex-col items-center justify-center text-white text-[10px] font-bold border-2 border-white z-10 tracking-widest leading-tight shadow-md">
-          <span>完全</span>
-          <span>無料</span>
-        </div>
-
-        {/* Main Content (Icon Removed) */}
-        <div className="flex-1 flex flex-col items-center justify-center py-2 px-1 md:px-2 pl-8">
-          <div className="bg-white/20 text-white text-[10px] md:text-xs font-bold px-3 py-0.5 rounded-full mb-1.5 tracking-wider">
-            簡単1分で登録完了
+        {showBadge && (
+          <div className={`absolute ${badgeSize} bg-[#333] rounded-full flex flex-col items-center justify-center text-white font-bold border-2 border-white z-10 tracking-widest leading-tight shadow-md`}>
+            <span>完全</span>
+            <span>無料</span>
           </div>
-          <div className="text-base md:text-xl font-black leading-none tracking-tight whitespace-nowrap">
-            LINEで限定イベントを見る
+        )}
+
+        {/* Icon Area - Only show if NO badge */}
+        {!showBadge && (
+          <div className={`${iconBoxWidth} bg-[#06C755] flex flex-col items-center justify-center border-r border-white/10 shrink-0`}>
+             <img 
+               src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" 
+               alt="LINE" 
+               style={{ width: iconSize, height: iconSize }}
+               className="object-contain" 
+             />
+          </div>
+        )}
+
+        {/* Main Content */}
+        <div className={`flex-1 flex flex-col items-center justify-center py-2 ${contentPadding}`}>
+          {showSubtext && (
+            <div className={`bg-white/20 text-white font-bold rounded-full mb-1.5 tracking-wider ${subTextSize}`}>
+              簡単1分で登録完了
+            </div>
+          )}
+          <div className={`${textSize} font-black leading-none tracking-tight whitespace-nowrap`}>
+            {mainText}
           </div>
         </div>
 
         {/* Right Arrow Area */}
-        <div className="w-12 relative flex flex-col items-center justify-center overflow-hidden border-l border-white/10">
+        <div className={`${arrowBoxWidth} relative flex flex-col items-center justify-center overflow-hidden border-l border-white/10 shrink-0`}>
           <div className="absolute inset-0 bg-black/10 -skew-x-12 origin-bottom-right scale-150 translate-x-2" />
           <div className="relative z-10 flex flex-col items-center">
             <span className="text-[8px] font-bold font-english mb-0.5 tracking-tighter opacity-90">CLICK!</span>
-            <ChevronsRight size={22} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+            <ChevronsRight size={arrowSize} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
           </div>
         </div>
       </button>
@@ -274,6 +306,10 @@ const App = () => {
             {/* Left copy */}
             <div className="md:col-span-7 h-full flex flex-col justify-center pt-0 md:pt-32 md:pb-20 relative z-20">
               <div className="animate-fade-in-up">
+                {/* Added Badge */}
+                <div className="inline-block bg-[#111] text-white text-[10px] md:text-xs font-bold px-3 py-1 mb-4 rounded-sm tracking-wider">
+                  28卒・29卒対象
+                </div>
                 <p className="text-3xl sm:text-4xl md:text-3xl font-black text-[#111111] tracking-tight mb-3 md:mb-4">
                   講師限定
                 </p>
@@ -526,7 +562,7 @@ const App = () => {
                         STANDARD ROUTE
                       </span>
                       <h3 className="mt-5 text-2xl font-bold text-black leading-snug">
-                        多くの学生が通る<br className="hidden md:block" />"競争の激しい"道のり
+                        多くの学生が通る<br />"競争の激しい"道のり
                       </h3>
                       <p className="mt-5 text-sm text-gray-600 leading-loose">
                         エントリー数が膨大で、情報収集・ES・面接対策の「総力戦」になりやすい。
@@ -585,11 +621,11 @@ const App = () => {
                         INVITATION ROUTE
                       </span>
                       <h3 className="mt-5 text-2xl font-black text-[#FF7B44] leading-snug">
-                        実績が評価される<br className="hidden md:block" />"選ばれた人"の近道
+                        実績が評価される<br />"選ばれた人"の近道
                       </h3>
                       <p className="mt-5 text-sm text-gray-600 leading-loose">
-                        指導実績などのデータを評価軸に置き、
-                        書類・準備のムダを削ります。選考はスピードと確度を両立。
+                        指導実績・スコアなどのデータを評価軸に置き、
+                        書類・準備のムダを削ります。
                       </p>
                     </div>
 
@@ -617,7 +653,7 @@ const App = () => {
                             </div>
                             <div>
                               <p className="text-sm font-bold text-black">
-                                <span className="text-[#FF7B44]">特別枠</span>で役員面接へ直結
+                                <span className="text-[#FF7B44]">特別枠</span>で非公開のイベントへご案内
                               </p>
                               <p className="mt-1 text-xs text-gray-500 leading-loose">限定ルートのため、選考が短く意思決定が速い。</p>
                             </div>
@@ -631,7 +667,7 @@ const App = () => {
                             </div>
                             <div>
                               <p className="text-sm font-bold text-black">
-                                プロメンターと効率的に対策<span className="text-[#FF7B44]">*</span>
+                                メンターと効率的に対策<span className="text-[#FF7B44]">*</span>
                               </p>
                               <p className="mt-1 text-xs text-gray-500 leading-loose">
                                 ※メンターはMBB内定者、メガベンチャー内定者等
@@ -782,6 +818,19 @@ const App = () => {
                   </div>
                   <h3 className="relative z-10 text-lg font-bold mb-3 text-[#111111]">{p.title}</h3>
                   <p className="relative z-10 text-xs text-gray-500 leading-relaxed font-medium">{p.desc}</p>
+                  
+                  {/* CTA Button in 1st Box - Simplified version */}
+                  {index === 0 && (
+                    <div className="mt-6 w-full flex justify-center">
+                      <MainCtaButton 
+                        onClick={() => scrollToSection('contact')} 
+                        small={true} 
+                        mainText="友だち追加" 
+                        showSubtext={false} 
+                        showBadge={false} 
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Arrow (Render between items) */}
@@ -896,7 +945,12 @@ const App = () => {
           onClick={() => scrollToSection('contact')}
           className="w-full bg-[#06C755] text-white text-center py-4 rounded-lg font-bold text-sm shadow-md flex items-center justify-center gap-2 active:opacity-90 active:scale-[0.98] transition-all"
         >
-          {/* Icon Removed */}
+          <img 
+             src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" 
+             alt="LINE" 
+             style={{ width: 24, height: 24 }}
+             className="object-contain" 
+           />
           <span>LINEで限定イベントを確認</span>
         </button>
       </div>

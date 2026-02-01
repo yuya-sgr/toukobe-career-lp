@@ -1,31 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, Check, ChevronDown, ChevronUp, Users, Award, TrendingUp, Building, Lock, Calendar, MessageCircle, Star, HelpCircle, FileText, UserCheck, Briefcase, Globe, Zap, X, Menu, AlertCircle, Clock, CheckCircle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  Users,
+  Award,
+  TrendingUp,
+  Lock,
+  Globe,
+  X,
+  Menu,
+  AlertCircle,
+  Clock,
+  HelpCircle,
+  FileText,
+  UserCheck,
+  Gift,
+  ChevronsRight,
+} from 'lucide-react';
 
-const ToukobeCareerLP = () => {
+const App = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
-  const [activeTab, setActiveTab] = useState('prime'); 
-  
+  const [activeTab, setActiveTab] = useState('prime');
+
   // Intersection Observer for scroll animations
   useEffect(() => {
     const observerOptions = {
       root: null,
       rootMargin: '0px',
-      threshold: 0.1
+      threshold: 0.15,
     };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
-          observer.unobserve(entry.target);
+          obs.unobserve(entry.target);
         }
       });
     }, observerOptions);
 
-    const scrollElements = document.querySelectorAll('.scroll-trigger, .mask-reveal, .text-reveal');
-    scrollElements.forEach(el => observer.observe(el));
+    const scrollElements = document.querySelectorAll(
+      '.scroll-trigger, .mask-reveal, .text-reveal'
+    );
+    scrollElements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
   }, []);
@@ -33,8 +53,7 @@ const ToukobeCareerLP = () => {
   // Header Scroll handler
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 20;
-      setScrolled(isScrolled);
+      setScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -42,38 +61,99 @@ const ToukobeCareerLP = () => {
 
   // Smooth scroll
   const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
     setMobileMenuOpen(false);
   };
 
+  const toggleFaq = (index) => {
+    setOpenFaq(openFaq === index ? null : index);
+  };
+
+  // Reusable Rectangular CTA Button Component
+  const RectCtaButton = ({ color, badgeText, subText, mainText, onClick }) => {
+    const isGreen = color === 'green';
+    const bgClass = isGreen ? 'bg-[#06C755]' : 'bg-[#FF7B44]';
+    const textClass = isGreen ? 'text-[#06C755]' : 'text-[#FF7B44]';
+    const shadowClass = 'shadow-[4px_4px_0px_0px_#333]';
+
+    return (
+      <button
+        onClick={onClick}
+        className={`group relative w-full max-w-[340px] h-[72px] flex items-stretch text-white transition-transform active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#333] ${bgClass} ${shadowClass}`}
+      >
+        {/* Badge */}
+        <div className="absolute -top-3 -left-3 w-12 h-12 bg-[#333] rounded-full flex items-center justify-center text-white text-xs font-bold border-2 border-white z-10 tracking-wider">
+          {badgeText}
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col items-center justify-center py-1 pl-6 pr-2">
+          <div className={`bg-white ${textClass} text-[10px] md:text-[11px] font-bold px-3 py-0.5 rounded-full mb-1 tracking-wide`}>
+            {subText}
+          </div>
+          <div className="text-base md:text-lg font-bold leading-none tracking-tight">
+            {mainText}
+          </div>
+        </div>
+
+        {/* Right Arrow Area */}
+        <div className="w-14 relative flex flex-col items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-black/10 -skew-x-12 origin-bottom-right scale-150 translate-x-2" />
+          <div className="relative z-10 flex flex-col items-center">
+            <span className="text-[9px] font-bold font-english mb-0.5 tracking-tighter opacity-90">CLICK!</span>
+            <ChevronsRight size={20} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+      </button>
+    );
+  };
+
   return (
-    <div className="antialiased text-slate-700 font-sans bg-[#FAFAFA] selection:bg-[#FF8A32] selection:text-white">
-      {/* Styles Injection */}
+    <div className="antialiased text-[#111111] font-sans bg-white selection:bg-[#FF7B44] selection:text-white">
+      {/* Style + Design Tokens */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+
         :root {
-          --c-main: #FF8A32;
-          --c-main-light: #FFF2EB;
-          --c-text: #334155;
+          --manabi-main: #FF7B44;
+          --manabi-black: #111111;
+          --manabi-dark: #333333;
+          --manabi-light: #F5F5F5;
+          --border-gray: #E0E0E0;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
-          font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-          color: var(--c-text);
-          background-color: #FAFAFA;
+          font-family: 'Noto Sans JP', sans-serif;
+          color: var(--manabi-black);
+          background-color: #fff;
+          overflow-x: hidden;
         }
 
-        .font-english { font-family: "Roboto", sans-serif; }
+        .font-english { font-family: 'Montserrat', sans-serif; }
 
-        /* Animation Classes */
+        /* Animation */
+        .animate-fade-in-up {
+          animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
         .mask-reveal { position: relative; overflow: hidden; }
         .mask-reveal::after {
-          content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-          background-color: #FAFAFA; 
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: #fff;
           transform: translateY(0);
           transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 2;
@@ -82,271 +162,634 @@ const ToukobeCareerLP = () => {
         .mask-reveal img { transform: scale(1.1); transition: transform 1.5s ease-out; }
         .mask-reveal.active img { transform: scale(1); }
 
-        .text-reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .text-reveal {
+          opacity: 0;
+          transform: translateY(40px);
+          transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         .text-reveal.active { opacity: 1; transform: translateY(0); }
-        
-        .animate-fade-in-up {
-            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
+
+        @keyframes scrollLine {
+          0%    { height: 0%; top: 0; opacity: 0; }
+          30%   { height: 50%; top: 0; opacity: 1; }
+          100% { height: 0%; top: 100%; opacity: 0; }
+        }
+        .animate-scroll-line { animation: scrollLine 2s ease-in-out infinite; }
+
+        /* Minimal Card */
+        .card-outline {
+          background: #fff;
+          border: 1px solid var(--border-gray);
         }
 
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-
-        .card-flat {
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        /* Horizontal scroll (events) */
+        .toukobe-scroll {
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
         }
-        .section-title-en {
-            font-family: "Roboto", sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            color: #FF8A32;
-            font-size: 0.875rem;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .hero-gradient {
-            background: radial-gradient(circle at 50% 0%, rgba(255, 138, 50, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
-        }
-
-        @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .animate-bounce-slow { animation: bounce-slow 3s ease-in-out infinite; }
+        .toukobe-scroll::-webkit-scrollbar { display: none; }
       `}</style>
 
-      {/* Header */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${scrolled ? 'bg-white/95 backdrop-blur-sm border-gray-200 shadow-sm py-2' : 'bg-white/0 border-transparent py-4'}`}>
-        <div className="max-w-[1200px] mx-auto px-6 h-12 md:h-16 flex justify-between items-center">
-          <div className="cursor-pointer hover:opacity-70 transition-opacity" onClick={() => window.scrollTo(0, 0)}>
-            <img src="https://www.toukobe.com/wp-content/uploads/Group-164.png" alt="TOUKOBE CAREER" className="h-6 md:h-9 w-auto object-contain" />
+      {/* Header (PC Only) */}
+      <header
+        className={`fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 transition-all duration-300 hidden md:block ${
+          scrolled ? 'shadow-sm' : ''
+        }`}
+      >
+        <div className="max-w-[1400px] mx-auto px-6 h-[72px] flex justify-between items-center">
+          <div
+            className="cursor-pointer hover:opacity-60 transition-opacity"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            <img
+              src="https://www.toukobe.com/wp-content/uploads/Group-164.png"
+              alt="TOUKOBE CAREER"
+              className="h-10 w-auto object-contain"
+            />
           </div>
 
-          <nav className="hidden md:flex items-center space-x-8">
-            {[{ label: 'トウコベキャリアとは', id: 'concept' }, { label: '特徴', id: 'features' }, { label: 'メンター', id: 'mentor' }, { label: '流れ', id: 'flow' }, { label: 'よくある質問', id: 'faq' }].map((item) => (
-              <button key={item.label} onClick={() => scrollToSection(item.id)} className="text-sm font-bold text-slate-800 hover:text-[#FF8A32] transition-colors relative group">
-                {item.label}
-                <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-[#FF8A32] transition-all duration-300 group-hover:w-full"></span>
+          <nav className="flex items-center h-full">
+            <div className="flex items-center space-x-8 mr-8">
+              {[
+                { label: 'トウコベキャリアとは', id: 'concept' },
+                { label: '特徴', id: 'features' },
+                { label: '流れ', id: 'flow' },
+                { label: 'よくある質問', id: 'faq' },
+              ].map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-xs font-bold tracking-widest text-[#111111] hover:text-[#FF7B44] transition-colors font-english relative group"
+                >
+                  {item.label}
+                  <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-[#FF7B44] transition-all duration-300 group-hover:w-full" />
+                </button>
+              ))}
+            </div>
+            
+            {/* Header CTA Buttons */}
+            <div className="flex h-full items-center gap-0 ml-4">
+              {/* Left Button (Event - Orange) */}
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="group h-full flex items-stretch shadow-sm hover:opacity-95 transition-opacity"
+              >
+                {/* Side Label */}
+                <div className="w-9 bg-[#E06A3A] text-white flex flex-col items-center justify-center text-sm font-bold leading-tight">
+                  <span>無</span>
+                  <span>料</span>
+                </div>
+                {/* Main Content */}
+                <div className="flex-1 bg-[#FF7B44] text-white flex items-center justify-between px-5">
+                  <div className="flex flex-col items-start justify-center h-full space-y-0.5 whitespace-nowrap">
+                    <span className="text-sm font-bold leading-tight">イベントを</span>
+                    <span className="text-sm font-bold leading-tight">確認する</span>
+                  </div>
+                  <ChevronsRight size={18} strokeWidth={3} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
               </button>
-            ))}
-            <button className="bg-[#FF8A32] text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-[#e06d1b] transition-all">会員登録 (無料)</button>
-          </nav>
 
-          <button className="md:hidden text-slate-800 w-10 h-10 flex items-center justify-center bg-white/80 rounded-full shadow-sm border border-gray-100" onClick={() => setMobileMenuOpen(true)}>
-            <Menu size={20} />
-          </button>
+              {/* Right Button (LINE - Green) */}
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="group h-full flex items-stretch shadow-sm hover:opacity-95 transition-opacity"
+              >
+                {/* Side Label */}
+                <div className="w-9 bg-[#05B24A] text-white flex flex-col items-center justify-center text-sm font-bold leading-tight">
+                  <span>無</span>
+                  <span>料</span>
+                </div>
+                {/* Main Content */}
+                <div className="flex-1 bg-[#06C755] text-white flex items-center justify-between px-5">
+                  <div className="flex flex-col items-start justify-center h-full space-y-0.5 whitespace-nowrap">
+                    <span className="text-sm font-bold leading-tight">LINEで</span>
+                    <span className="text-sm font-bold leading-tight">限定オファー</span>
+                  </div>
+                  <ChevronsRight size={18} strokeWidth={3} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </button>
+            </div>
+          </nav>
         </div>
       </header>
 
-      {/* Mobile Nav Overlay */}
-      <div className={`fixed inset-0 bg-white z-[60] transition-all duration-300 md:hidden flex flex-col ${mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className="h-16 flex justify-end items-center px-6 border-b border-gray-100">
-          <button onClick={() => setMobileMenuOpen(false)} className="w-10 h-10 flex items-center justify-center text-slate-800 bg-gray-50 rounded-full"><X size={20} /></button>
+      {/* Hero Section (FV) */}
+      <section className="relative h-[100dvh] w-full overflow-hidden">
+        {/* SP Logo (Absolute Left Top) */}
+        <div className="md:hidden absolute top-6 left-6 z-30">
+          <img
+            src="https://www.toukobe.com/wp-content/uploads/Group-164.png"
+            alt="TOUKOBE CAREER"
+            className="h-6 w-auto object-contain"
+          />
         </div>
-        <div className="flex-1 flex flex-col items-center justify-center space-y-8 p-6">
-          {['concept', 'features', 'mentor', 'flow', 'faq'].map((id, i) => (
-            <button key={id} onClick={() => scrollToSection(id)} className="text-xl font-bold text-slate-800">
-              {['トウコベキャリアとは', '特徴', 'メンター', '流れ', 'よくある質問'][i]}
-            </button>
-          ))}
-          <button className="w-full max-w-xs bg-[#FF8A32] text-white py-4 rounded-full font-bold text-lg">会員登録 (無料)</button>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="relative w-full pt-28 md:pt-40 pb-20 md:pb-24 overflow-hidden hero-gradient">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16">
-            
-            {/* Text Content */}
-            <div className="w-full md:w-1/2 text-center md:text-left order-2 md:order-1">
-              <div className="inline-flex items-center gap-2 bg-[#FFF2EB] text-[#FF8A32] px-4 py-1.5 rounded-full text-xs font-bold mb-6 animate-fade-in-up border border-[#FF8A32]/20 shadow-sm" style={{animationDelay: '0.1s'}}>
-                <span className="flex items-center justify-center w-4 h-4 bg-[#FF8A32] text-white rounded-full text-[10px]">★</span>
-                東大・京大生講師のための選抜型PF
+        {/* Base */}
+        <div className="absolute inset-0 bg-white" />
+
+        {/* Color accents */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Soft gradient wash */}
+          <div className="absolute -top-24 -right-24 w-[520px] h-[520px] rounded-full blur-[90px] opacity-70 bg-[radial-gradient(circle_at_center,_rgba(255,138,50,0.35),_rgba(255,255,255,0)_60%)]" />
+          <div className="absolute -bottom-40 -left-40 w-[560px] h-[560px] rounded-full blur-[110px] opacity-70 bg-[radial-gradient(circle_at_center,_rgba(56,82,227,0.20),_rgba(255,255,255,0)_60%)]" />
+
+          {/* Polygon layers */}
+          <div className="absolute inset-0">
+            <div
+              className="absolute left-[-12%] top-[18%] w-[120%] h-[60%] bg-[#FFF2EB]"
+              style={{ clipPath: 'polygon(0% 35%, 100% 5%, 100% 70%, 0% 95%)' }}
+            />
+            <div
+              className="absolute left-[-10%] top-[32%] w-[120%] h-[55%] bg-[#FFE2D0] opacity-80"
+              style={{ clipPath: 'polygon(0% 55%, 100% 15%, 100% 85%, 0% 100%)' }}
+            />
+            <div
+              className="absolute right-[-20%] top-[22%] w-[70%] h-[70%] bg-[#EAF0FF] opacity-55"
+              style={{ clipPath: 'polygon(18% 0%, 100% 18%, 82% 100%, 0% 82%)' }}
+            />
+          </div>
+        </div>
+
+        <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 md:px-10 h-full">
+          <div className="w-full h-full grid grid-cols-1 md:grid-cols-12 gap-10">
+            {/* Left copy: Center aligned for focus */}
+            <div className="md:col-span-7 h-full flex flex-col justify-center pt-0 md:pt-32 md:pb-20 relative z-20">
+              
+              {/* Copy (Brand removed, Sizes increased) */}
+              <div className="animate-fade-in-up">
+                <p className="text-3xl sm:text-4xl md:text-3xl font-black text-[#111111] tracking-tight mb-3 md:mb-4">
+                  講師限定
+                </p>
+                {/* Responsive font size to prevent line break and overflow */}
+                <h1 className="text-[11vw] sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.15] md:leading-[1.05] tracking-tight text-[#FF7B44] whitespace-nowrap">
+                  就活支援プログラム
+                </h1>
               </div>
 
-              <h1 className="font-black leading-[1.3] tracking-tighter mb-6 animate-fade-in-up text-slate-900" style={{animationDelay: '0.2s'}}>
-                <span className="block text-[2.75rem] sm:text-5xl md:text-7xl mb-2">教育の質を、</span>
-                <span className="block text-[2.75rem] sm:text-5xl md:text-7xl text-[#FF8A32] relative inline-block">
-                  キャリアの質へ。
-                  <svg className="absolute -bottom-2 left-0 w-full h-3 text-[#FF8A32]/20" viewBox="0 0 100 10" preserveAspectRatio="none">
-                    <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
-                  </svg>
-                </span>
-              </h1>
-              
-              <p className="animate-fade-in-up text-slate-500 font-medium text-sm md:text-lg leading-loose mb-8 max-w-lg mx-auto md:mx-0" style={{animationDelay: '0.3s'}}>
-                あなたの指導実績を、社会が求める「ビジネススキル」として再定義する。<br className="hidden md:block" />
-                トウコベ講師限定の、特別選考ルート直結プラットフォーム。
-              </p>
+              {/* CTA */}
+              <div className="mt-12 md:mt-16 animate-fade-in-up" style={{ animationDelay: '0.22s' }}>
+                {/* Badges */}
+                <div className="flex flex-wrap gap-2 mb-8 justify-start">
+                  <span className="inline-flex items-center gap-1 bg-gray-100 border border-gray-200 text-gray-700 text-[11px] md:text-xs font-bold px-3 py-1.5 rounded-full">
+                    <Check size={12} className="text-[#FF7B44]" strokeWidth={3} />
+                    完全無料
+                  </span>
+                  <span className="inline-flex items-center gap-1 bg-orange-50 border border-orange-100 text-[#FF7B44] text-[11px] md:text-xs font-bold px-3 py-1.5 rounded-full">
+                    <Check size={12} className="text-[#FF7B44]" strokeWidth={3} />
+                    限定ルート多数
+                  </span>
+                </div>
 
-              <div className="animate-fade-in-up flex flex-col sm:flex-row gap-4 justify-center md:justify-start" style={{animationDelay: '0.4s'}}>
-                <button className="w-full sm:w-auto bg-[#FF8A32] text-white px-8 py-4 rounded-full font-bold text-base shadow-lg shadow-[#FF8A32]/30 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group">
-                  会員登録する (無料)
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                </button>
+                {/* Rectangular Buttons (FV) */}
+                <div className="flex flex-col sm:flex-row flex-wrap gap-6">
+                  <RectCtaButton
+                    color="orange"
+                    badgeText="無料"
+                    subText="まずはここから"
+                    mainText="イベントを確認する"
+                    onClick={() => scrollToSection('contact')}
+                  />
+                  <RectCtaButton
+                    color="green"
+                    badgeText="無料"
+                    subText="簡単1分で完了"
+                    mainText="LINEで限定オファー"
+                    onClick={() => scrollToSection('contact')}
+                  />
+                </div>
               </div>
-              
-              <div className="mt-8 flex items-center justify-center md:justify-start gap-6 animate-fade-in-up" style={{animationDelay: '0.5s'}}>
-                <div className="flex -space-x-3">
-                  {[12,13,14,15].map((id) => (
-                    <div key={id} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
-                      <img src={`https://i.pravatar.cc/100?img=${id}`} alt="User" className="w-full h-full object-cover" />
+            </div>
+
+            {/* Right visual: Hidden on Mobile, Visible on Desktop */}
+            <div className="hidden md:flex md:col-span-5 relative h-full items-end justify-end pointer-events-none">
+              <div className="relative w-full h-[85%] translate-y-14">
+                {/* Image */}
+                <div className="absolute inset-0 overflow-visible mask-reveal scroll-trigger">
+                  <img
+                    src="https://www.toukobe.com/wp-content/uploads/image-16.png"
+                    alt="Tutor"
+                    className="w-full h-full object-contain object-bottom scale-[1.35] origin-bottom-right"
+                  />
+                </div>
+
+                {/* Bottom color wedge */}
+                <div
+                  className="absolute -bottom-10 -right-10 w-[80%] h-[50%] bg-[#FF7B44] opacity-[0.10] z-[-1]"
+                  style={{ clipPath: 'polygon(20% 0%, 100% 20%, 80% 100%, 0% 80%)' }}
+                  aria-hidden="true"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll line */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1px] h-12 bg-gray-100 z-0">
+          <div className="absolute top-0 left-0 w-full h-full bg-black animate-scroll-line" />
+        </div>
+      </section>
+
+      {/* Upcoming Event Section (cards; horizontal scroll-ready) */}
+      <section className="bg-white py-16 md:py-20 border-b border-gray-100">
+        <div className="max-w-[1200px] mx-auto px-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-black">新着エントリー</h2>
+          </div>
+
+          {/* Scroll container */}
+          {(() => {
+            const events = [
+              {
+                id: 'leverages-20260315',
+                deadline: '【締切】2/28（土）23:59',
+                company: 'レバレジーズ',
+                title: '【参加謝礼3,000円】Leverages特別企業説明会',
+                desc: '年商1000億規模の急成長企業「レバレジーズ」が全面協力。就活の進め方レクチャー、GD練習、座談会。',
+                meta: '90min / GD練習 / 座談会 / オンライン',
+                dateLabel: '2026.03.15',
+                time: '18:00 - 19:30',
+                place: 'オンライン(Zoom)',
+                image:
+                  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+                logo:
+                  'https://www.toukobe.com/wp-content/uploads/%E3%83%AC%E3%83%90%E3%83%AC%E3%82%B8%E3%83%BC%E3%82%BA%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE-%E5%BA%83%E5%A0%B1%E6%8B%85%E5%BD%93_id-XN67gio_0.png',
+              },
+            ];
+
+            return (
+              <div className="relative">
+                <div className="flex gap-6 overflow-x-auto pb-3 snap-x snap-mandatory toukobe-scroll">
+                  {events.map((e) => (
+                    <div
+                      key={e.id}
+                      className="min-w-[320px] sm:min-w-[360px] md:min-w-[420px] bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start"
+                    >
+                      {/* Deadline + wish */}
+                      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                        <p className="text-sm font-bold text-[#FF7B44]">{e.deadline}</p>
+                      </div>
+
+                      {/* Image */}
+                      <div className="relative">
+                        <div className="h-[150px] md:h-[170px] bg-gray-50 overflow-hidden">
+                          <img
+                            src={e.image}
+                            alt={e.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+
+                        {/* Logo badge */}
+                        <div className="absolute left-4 top-4 bg-white border border-gray-200 rounded-lg p-2 shadow-sm">
+                          <img
+                            src={e.logo}
+                            alt={`${e.company} ロゴ`}
+                            className="h-6 w-auto object-contain"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Body */}
+                      <div className="px-5 py-5">
+                        <p className="text-xs font-bold text-gray-500">{e.company}</p>
+                        <h3 className="mt-2 text-base md:text-lg font-bold text-black leading-snug">
+                          {e.title}
+                        </h3>
+                        <p className="mt-3 text-xs text-gray-500 leading-relaxed">{e.desc}</p>
+                        <p className="mt-4 text-xs text-gray-400 font-bold">{e.meta}</p>
+
+                        {/* Action */}
+                        <div className="mt-5 flex items-center justify-between">
+                          <div className="text-xs text-gray-500 font-bold">
+                            <span className="font-english mr-2">{e.dateLabel}</span>
+                            <span className="mr-2">{e.time}</span>
+                            <span className="inline-flex items-center gap-1">
+                              <Globe size={14} /> {e.place}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => scrollToSection('contact')}
+                            className="inline-flex items-center gap-2 text-sm font-bold text-[#FF7B44] hover:opacity-70 transition-opacity"
+                          >
+                            詳細
+                            <ArrowRight size={16} />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
-                <div className="text-left">
-                  <p className="text-xs font-bold text-slate-500">28卒・29卒が参加中</p>
-                  <div className="flex text-[#FF8A32] text-xs">★★★★★ <span className="text-slate-400 ml-1">4.9/5.0</span></div>
-                </div>
+
+                {/* Hint gradient (right) */}
+                <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
               </div>
-            </div>
-
-            {/* Visual Content */}
-            <div className="w-full md:w-1/2 relative order-1 md:order-2 animate-fade-in-up" style={{animationDelay: '0.3s'}}>
-              <div className="relative w-full aspect-[4/3] md:aspect-square max-w-[500px] mx-auto">
-                <div className="absolute inset-0 bg-slate-100 rounded-[32px] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-all duration-700">
-                  <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" alt="Students" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                </div>
-
-                <div className="absolute -bottom-6 -left-4 md:-left-8 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-3 animate-bounce-slow">
-                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600"><CheckCircle size={20} /></div>
-                  <div>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase">OFFER</p>
-                    <p className="text-sm font-bold text-slate-800">特別選考ルート獲得</p>
-                  </div>
-                </div>
-
-                <div className="absolute top-8 -right-4 md:-right-8 bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-lg border border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <Award size={16} className="text-[#FF8A32]" />
-                    <span className="text-xs font-bold text-slate-700">指導実績を評価</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Upcoming Event */}
-      <section className="bg-white pt-2 pb-16 md:pt-4 md:pb-20 border-b border-slate-100">
-        <div className="container mx-auto px-6 max-w-[1000px]">
-          <div className="card-flat overflow-hidden flex flex-col md:flex-row group transition-all duration-300 shadow-sm hover:shadow-md animate-fade-in-up" style={{animationDelay: '0.4s'}}>
-            <div className="w-full md:w-2/5 relative min-h-[200px] overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop" alt="Event" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute top-4 left-4 bg-[#FF8A32] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1">
-                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>募集中
-              </div>
-            </div>
-            <div className="w-full md:w-3/5 p-6 md:p-8 flex flex-col justify-center">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-[10px] font-bold tracking-widest text-[#FF8A32] border border-[#FF8A32] px-2 py-0.5">EVENT</span>
-                <span className="text-[10px] font-bold text-slate-400">2026.03.15 (Sat)</span>
-              </div>
-              <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-4 group-hover:text-[#FF8A32] transition-colors">【28卒対象】Leveragesによる<br className="hidden md:block" />特別キャリア形成プロジェクト</h3>
-              <p className="text-sm text-slate-500 mb-6">外資・コンサル・メガベンチャーの内定者が登壇。ES・面接の極意を徹底解説します。</p>
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                <div className="flex items-center gap-4 text-xs font-bold text-slate-500">
-                  <span className="flex items-center gap-1.5"><Clock size={14} /> 19:00 - 20:30</span>
-                  <span className="flex items-center gap-1.5"><Globe size={14} /> オンライン</span>
-                </div>
-                <button className="text-sm font-bold text-[#FF8A32] flex items-center gap-1">詳細を見る <ArrowRight size={16} /></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Band */}
-      <section className="py-10 bg-[#FFF2EB] border-b border-[#FF8A32]/20 text-center">
-        <div className="container mx-auto px-6">
-          <p className="text-sm sm:text-lg font-bold text-[#111111] mb-6 tracking-wider font-serif">＼ まずは無料の会員登録から ／</p>
-          <button className="bg-[#FF8A32] text-white px-8 py-4 rounded-full font-bold text-base md:text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3 mx-auto group">
-            今すぐ登録する <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </button>
-          <p className="mt-4 text-xs text-gray-500">※ 登録・利用はすべて無料です</p>
+            );
+          })()}
         </div>
       </section>
 
       {/* Problem Section */}
-      <section className="py-24 bg-[#FAFAFA]">
-        <div className="container mx-auto px-6 max-w-[1000px]">
-          <div className="mb-16 scroll-trigger text-reveal">
-            <span className="section-title-en">PROBLEM</span>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">「就活はまだ先でいい」<br />そう思っていませんか？</h2>
+      <section className="py-32 bg-[#F5F5F5] relative">
+        <div className="max-w-[1000px] mx-auto px-6">
+          <div className="mb-20 scroll-trigger text-reveal">
+            <p className="text-xs font-bold font-english tracking-widest text-gray-400 mb-4">PROBLEM</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-black leading-relaxed tracking-tight">
+              「就活はまだ先でいい」<br />
+              そう思っていませんか？
+            </h2>
+            <p className="mt-6 text-sm md:text-base text-gray-600 leading-loose font-medium max-w-xl">
+              優秀な学生ほど、<span className="text-[#FF7B44] font-bold border-b-2 border-[#FF7B44] pb-1">時間不足</span>という構造的な制約に直面します。
+            </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[{ icon: <Clock />, title: "時間が足りない", desc: "研究・授業・指導バイトで忙しく、就活に割ける時間が物理的に足りない。" },
-              { icon: <HelpCircle />, title: "ガクチカの不安", desc: "「家庭教師」の経験だけで、難関企業の選考を勝ち抜けるか不安がある。" },
-              { icon: <TrendingUp />, title: "出遅れ感", desc: "周りはまだ動いていないが、ネット上の情報を見ると焦りを感じてしまう。" }
-            ].map((p, i) => (
-              <div key={i} className="card-flat p-8 flex flex-col items-start hover:border-[#FF8A32]/30 transition-all">
-                <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 mb-6">{p.icon}</div>
-                <h3 className="font-bold text-lg mb-3">{p.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{p.desc}</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-l border-gray-300 scroll-trigger text-reveal">
+            {[{ no: '01', icon: <Clock size={22} />, title: '時間が足りない', desc: '研究・授業・指導バイトで忙しく、就活に割ける時間が物理的に足りない。' },{ no: '02', icon: <HelpCircle size={22} />, title: 'ガクチカの不安', desc: '「家庭教師」の経験だけで、難関企業の選考を勝ち抜けるか不安がある。' },{ no: '03', icon: <TrendingUp size={22} />, title: '出遅れ感', desc: '周りはまだ動いていないが、ネット上の情報を見ると焦りを感じてしまう。' }].map((c) => (
+              <div key={c.no} className="bg-white p-12 border-r border-b border-gray-300 group hover:bg-black transition-colors duration-500">
+                <div className="text-[#FF7B44] text-3xl font-english font-bold mb-6 group-hover:text-white transition-colors">{c.no}</div>
+                <h3 className="text-lg font-bold text-black mb-4 group-hover:text-white transition-colors">{c.title}</h3>
+                <p className="text-xs text-gray-500 leading-loose group-hover:text-gray-400 transition-colors">{c.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="py-24 bg-[#FAFAFA]">
-        <div className="container mx-auto px-6 max-w-[1200px]">
-          <div className="text-center mb-16">
-            <span className="section-title-en">FEATURES</span>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">選ばれる3つの理由</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[{ icon: <Lock />, color: "bg-[#FFF2EB] text-[#FF8A32]", title: "完全招待制の特別ルート", desc: "一般のナビサイトには掲載されない特別選考ルートや、限定イベントへご招待。" },
-              { icon: <Award />, color: "bg-[#F0F9FF] text-[#0EA5E9]", title: "指導実績が評価に直結", desc: "トウコベでの指導スコアを企業へ共有し、書類選考免除などの優遇を受けられます。" },
-              { icon: <UserCheck />, color: "bg-[#FDF2F8] text-[#EC4899]", title: "内定者によるメンタリング", desc: "難関大生のみの限定コミュニティで、優秀な就活仲間や内定者メンターと繋がれます。" }
-            ].map((f, i) => (
-              <div key={i} className="card-flat p-8 md:p-10 text-center hover:shadow-lg transition-all group">
-                <div className={`w-16 h-16 mx-auto ${f.color} rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>{f.icon}</div>
-                <h3 className="text-lg font-bold text-slate-900 mb-4">{f.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison */}
-      <section className="py-24 bg-[#FAFAFA]">
-        <div className="container mx-auto px-6 max-w-[900px]">
-          <div className="text-center mb-12">
-            <span className="section-title-en">COMPARISON</span>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">一般的な就活との違い</h2>
-          </div>
-          <div className="bg-white rounded-[32px] border border-slate-200 p-2 md:p-4 shadow-sm">
-            <div className="flex rounded-3xl bg-slate-100 p-1 mb-8">
-              <button onClick={() => setActiveTab('normal')} className={`flex-1 py-3 text-sm font-bold rounded-2xl transition-all ${activeTab === 'normal' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}>一般的な就活</button>
-              <button onClick={() => setActiveTab('prime')} className={`flex-1 py-3 text-sm font-bold rounded-2xl transition-all ${activeTab === 'prime' ? 'bg-[#FF8A32] text-white shadow-sm' : 'text-slate-400'}`}>トウコベキャリア</button>
+      {/* Solution Section (concept) */}
+      <section id="concept" className="py-24 md:py-40 bg-white relative">
+        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <div className="order-2 md:order-1 relative">
+            <div className="absolute -top-6 -left-6 w-full h-full bg-[#F5F5F5] z-0 hidden md:block" />
+            <div className="relative z-10 w-full aspect-[4/3] mask-reveal scroll-trigger">
+              <img
+                src="https://www.toukobe.com/wp-content/uploads/Frame-787-4.jpg"
+                className="w-full h-full object-cover grayscale-[30%]"
+                alt="Concept"
+              />
             </div>
-            <div className="px-4 pb-8 md:px-12 md:pb-12 min-h-[300px]">
+          </div>
+          <div className="order-1 md:order-2 space-y-12">
+            <div className="text-reveal scroll-trigger">
+              {/* Updated Header Style (No Border) */}
+              <p className="text-xs font-bold font-english tracking-widest text-gray-400 mb-4">
+                ABOUT
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold leading-relaxed tracking-tight mb-8">
+                その不安、<br />
+                <span className="text-[#FF7B44] border-b-2 border-[#FF7B44] pb-1">トウコベキャリア</span>が解決します。
+              </h2>
+              <p className="text-sm md:text-base text-gray-600 leading-loose font-medium mb-8">
+                トウコベキャリアは、講師のためだけのキャリア形成プラットフォームです。
+                あなたの指導実績を価値ある経験として証明し、本質的な能力を評価するトップ企業へとダイレクトに接続します。
+              </p>
+              <p className="text-sm md:text-base text-gray-600 leading-loose font-medium">
+                まだ就活を始めていなくても構いません。必要なのは、最初の一歩です。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="bg-[#F9F9F9] py-24 md:py-40">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 text-reveal scroll-trigger">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold font-english tracking-tight mb-4">
+                MERIT
+              </h2>
+              <p className="text-sm font-bold text-gray-500">選ばれる3つの理由</p>
+            </div>
+            <div className="hidden md:block w-1/2 h-[1px] bg-gray-300 mb-2" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-l border-gray-300 scroll-trigger">
+            {[
+              {
+                no: '01',
+                icon: <Lock size={22} />,
+                title: '完全招待制の特別ルート',
+                desc: '一般のナビサイトには掲載されない特別選考ルートや、限定イベントへ優先的にご招待します。',
+              },
+              {
+                no: '02',
+                icon: <Award size={22} />,
+                title: '指導実績が評価に直結',
+                desc: '指導スコアや合格実績などの実務データを企業へ共有し、書類選考免除などの優遇を受けられます。',
+              },
+              {
+                no: '03',
+                icon: <Gift size={22} />,
+                title: '説明会参加で謝礼を支給',
+                desc: '本イベントは業務の一環として扱われるため、参加者には謝礼を支給します。',
+              },
+            ].map((m) => (
+              <div
+                key={m.no}
+                className="bg-white p-10 border-r border-b border-gray-300 group hover:bg-black transition-colors duration-500"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <div className="text-[#FF7B44] text-3xl font-english font-bold group-hover:text-white transition-colors">
+                    {m.no}
+                  </div>
+                  <div className="text-gray-300 group-hover:text-[#FF7B44] transition-colors">
+                    {m.icon}
+                  </div>
+                </div>
+                <h3 className="text-lg font-bold mb-4 group-hover:text-white transition-colors">
+                  {m.title}
+                </h3>
+                <p className="text-xs text-gray-500 leading-loose group-hover:text-gray-400 transition-colors">
+                  {m.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Section */}
+      <section className="py-28 md:py-40 bg-white">
+        <div className="max-w-[980px] mx-auto px-6">
+          <div className="text-reveal scroll-trigger mb-12 md:mb-16">
+            <p className="text-xs font-bold font-english tracking-widest text-gray-400 mb-4">COMPARISON</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-black tracking-tight">
+              一般的な就活との違い
+            </h2>
+            <p className="mt-5 text-sm text-gray-600 leading-loose max-w-2xl">
+              "情報"と"準備"で消耗しがちな就活を、<span className="text-[#FF7B44] font-bold border-b-2 border-[#FF7B44] pb-0.5">実績評価</span>に寄せてショートカットします。
+            </p>
+          </div>
+
+          {/* Segmented Tabs */}
+          <div className="border border-gray-200 bg-white rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+            <div className="p-2 bg-gray-50 border-b border-gray-200">
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setActiveTab('normal')}
+                  className={`h-12 rounded-xl text-xs md:text-sm font-bold tracking-widest font-english transition-all duration-300 flex items-center justify-center gap-3 ${
+                    activeTab === 'normal'
+                      ? 'bg-black text-white shadow-sm'
+                      : 'bg-white text-black hover:text-[#FF7B44] border border-gray-200'
+                  }`}
+                >
+                  NORMAL
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('prime')}
+                  className={`h-12 rounded-xl text-xs md:text-sm font-bold tracking-widest font-english transition-all duration-300 flex items-center justify-center gap-3 ${
+                    activeTab === 'prime'
+                      ? 'bg-[#FF7B44] text-white shadow-sm'
+                      : 'bg-white text-black hover:text-[#FF7B44] border border-gray-200'
+                  }`}
+                  aria-label="TOUKOBE CAREER"
+                >
+                  {/* Use logo instead of text */}
+                  <img
+                    src="https://www.toukobe.com/wp-content/uploads/Group-164.png"
+                    alt="TOUKOBE CAREER"
+                    className={`h-5 w-auto object-contain transition-all ${
+                      activeTab === 'prime'
+                        ? 'brightness-0 invert'
+                        : 'opacity-90'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div className="px-6 py-10 md:px-10 md:py-12">
               {activeTab === 'normal' ? (
                 <div className="animate-fade-in-up">
-                  <div className="text-center mb-8"><h3 className="text-xl font-bold text-slate-700">競争の激しい「通常ルート」</h3></div>
-                  <ul className="space-y-4 max-w-md mx-auto text-sm font-bold text-slate-600">
-                    {["数万人が一斉にエントリー", "書類選考で足切りされるリスク", "ES作成・面接対策に追われる"].map((t) => (
-                      <li key={t} className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100"><X size={16} />{t}</li>
-                    ))}
-                  </ul>
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+                    {/* Left narrative */}
+                    <div className="md:col-span-5">
+                      <span className="inline-flex items-center gap-2 px-3 py-1 bg-white text-gray-700 text-[10px] font-bold tracking-widest font-english border border-gray-200 rounded-full">
+                        STANDARD ROUTE
+                      </span>
+                      <h3 className="mt-5 text-2xl font-bold text-black leading-snug">
+                        多くの学生が通る<br className="hidden md:block" />"競争の激しい"道のり
+                      </h3>
+                      <p className="mt-5 text-sm text-gray-600 leading-loose">
+                        エントリー数が膨大で、情報収集・ES・面接対策の「総力戦」になりやすい。
+                        実務的な強みがあっても、書類で埋もれるリスクが残ります。
+                      </p>
+                    </div>
+
+                    {/* Right list */}
+                    <div className="md:col-span-7">
+                      <div className="grid grid-cols-1 gap-4">
+                        <div className="p-5 md:p-6 border border-gray-200 rounded-xl bg-white">
+                          <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center">
+                              <Users size={18} className="text-gray-500" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-black">数万人が一斉にエントリー</p>
+                              <p className="mt-1 text-xs text-gray-500 leading-loose">競争環境が前提。差別化が難しい。</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-5 md:p-6 border border-gray-200 rounded-xl bg-white">
+                          <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center">
+                              <FileText size={18} className="text-gray-500" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-black">書類選考で足切りされるリスク</p>
+                              <p className="mt-1 text-xs text-gray-500 leading-loose">実績があっても、文字情報だけだと伝わりにくい。</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-5 md:p-6 border border-gray-200 rounded-xl bg-white">
+                          <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 rounded-xl border border-gray-200 flex items-center justify-center">
+                              <AlertCircle size={18} className="text-gray-500" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-black">ES作成・面接対策に追われる</p>
+                              <p className="mt-1 text-xs text-gray-500 leading-loose">時間コストが積み上がり、学業・研究とバッティングしがち。</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="animate-fade-in-up">
-                  <div className="text-center mb-8"><h3 className="text-xl font-bold text-[#FF8A32]">実績が評価される「特別ルート」</h3></div>
-                  <ul className="space-y-4 max-w-md mx-auto text-sm font-bold text-slate-800">
-                    {["実績評価で書類選考スキップ", "特別枠で役員面接へ直結", "プロメンターと効率的に対策"].map((t) => (
-                      <li key={t} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-[#FF8A32]/30 shadow-sm"><Check size={16} className="text-[#FF8A32]" />{t}</li>
-                    ))}
-                  </ul>
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+                    {/* Left narrative */}
+                    <div className="md:col-span-5">
+                      <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#FFF2EB] text-[#FF7B44] text-[10px] font-bold tracking-widest font-english border border-[#FF7B44]/30 rounded-full">
+                        INVITATION ROUTE
+                      </span>
+                      <h3 className="mt-5 text-2xl font-black text-[#FF7B44] leading-snug">
+                        実績が評価される<br className="hidden md:block" />"選ばれた人"の近道
+                      </h3>
+                      <p className="mt-5 text-sm text-gray-600 leading-loose">
+                        指導実績・スコアなどのデータを評価軸に置き、
+                        書類・準備のムダを削ります。選考はスピードと確度を両立。
+                      </p>
+                    </div>
+
+                    {/* Right list */}
+                    <div className="md:col-span-7">
+                      <div className="grid grid-cols-1 gap-4">
+                        <div className="p-5 md:p-6 rounded-xl border border-[#FF7B44]/35 bg-white shadow-[0_10px_30px_rgba(255,138,50,0.08)]">
+                          <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-[#FF7B44] flex items-center justify-center shrink-0">
+                              <Check size={18} className="text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-black">
+                                <span className="text-[#FF7B44]">実績評価</span>で書類選考スキップ
+                              </p>
+                              <p className="mt-1 text-xs text-gray-500 leading-loose">指導実績を定量で共有し、評価ポイントを明確化。</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-5 md:p-6 rounded-xl border border-[#FF7B44]/35 bg-white shadow-[0_10px_30px_rgba(255,138,50,0.08)]">
+                          <div className="flex items-center gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-[#FF7B44] flex items-center justify-center shrink-0">
+                              <Check size={18} className="text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-black">
+                                <span className="text-[#FF7B44]">特別枠</span>で役員面接へ直結
+                              </p>
+                              <p className="mt-1 text-xs text-gray-500 leading-loose">限定ルートのため、選考が短く意思決定が速い。</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-5 md:p-6 rounded-xl border border-[#FF7B44]/35 bg-white shadow-[0_10px_30px_rgba(255,138,50,0.08)]">
+                          <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-[#FF7B44] flex items-center justify-center shrink-0">
+                              <Check size={18} className="text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-black">
+                                プロメンターと効率的に対策<span className="text-[#FF7B44]">*</span>
+                              </p>
+                              <p className="mt-1 text-xs text-gray-500 leading-loose">
+                                ※メンターはMBB内定者、メガベンチャー内定者等
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Mini CTA: Closing area */}
+                      {/* Note: This section's buttons are also replaced in the final section below */}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -354,38 +797,178 @@ const ToukobeCareerLP = () => {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-24 bg-[#FAFAFA]">
-        <div className="container mx-auto px-6 max-w-[800px]">
-          <div className="text-center mb-16"><span className="section-title-en">FAQ</span><h2 className="text-2xl md:text-3xl font-bold text-slate-900">よくあるご質問</h2></div>
-          <div className="space-y-4">
-            {[["費用はかかりますか？", "いいえ、全てのサービスを無料でご利用いただけます。"], ["まだ就活を始めていなくても？", "はい。1・2年生向けの講座や早期インターン情報も多数あります。"]].map(([q, a], i) => (
-              <details key={i} className="group card-flat p-0 transition-all cursor-pointer">
-                <summary className="flex justify-between items-center p-6 font-bold text-slate-800 list-none">
-                  <span className="flex items-center gap-4"><span className="text-[#FF8A32]">Q.</span>{q}</span>
-                  <ChevronDown className="transition-transform group-open:rotate-180" size={20} />
-                </summary>
-                <div className="px-6 pb-6 text-sm text-slate-600 leading-relaxed border-t pt-4"><span className="font-bold text-[#FF8A32] mr-2">A.</span>{a}</div>
-              </details>
+      {/* Flow Section */}
+      <section id="flow" className="py-24 md:py-40 bg-white">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="text-center mb-16 text-reveal scroll-trigger">
+            <span className="text-xs font-bold tracking-widest text-gray-400 block mb-4">
+              FLOW
+            </span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-2">ご利用の流れ</h2>
+            <p className="text-sm font-normal text-gray-400">(概要)</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-reveal scroll-trigger">
+            {[
+              {
+                no: '01',
+                title: '会員登録',
+                desc: 'LINEで1分で登録完了。',
+                icon: <UserCheck size={26} />,
+              },
+              {
+                no: '02',
+                title: '限定オファー',
+                desc: 'あなたの実績に応じたオファー。',
+                icon: <FileText size={26} />,
+              },
+              {
+                no: '03',
+                title: '選考・内定',
+                desc: 'メンターが徹底伴走。',
+                icon: <Award size={26} />,
+              },
+            ].map((p) => (
+              <div
+                key={p.no}
+                className="bg-[#F8F9FA] rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow duration-300 group cursor-default"
+              >
+                <p className="text-xs font-bold text-gray-400 font-english mb-1">Program</p>
+                <p className="text-3xl font-black font-english text-[#FF7B44] mb-6 group-hover:scale-110 transition-transform">
+                  {p.no}
+                </p>
+                <div className="text-4xl text-gray-300 mb-6 group-hover:text-[#FF7B44] transition-colors duration-300">
+                  {p.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-[#111111]">{p.title}</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">{p.desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="faq" className="py-24 bg-white">
+        <div className="max-w-[800px] mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-16">よくある質問</h2>
+          <div className="space-y-0 border-t border-gray-200">
+            {[
+              {
+                q: 'サービスに費用はかかりますか？',
+                a: 'いいえ、登録から内定後のサポートまで、全てのサービスを無料でご利用いただけます。',
+              },
+              {
+                q: 'まだ就活を始めていなくても利用できますか？',
+                a: 'はい、可能です。大学1・2年生向けのキャリア講座や、早期インターン情報も多数取り扱っております。',
+              },
+              {
+                q: '紹介された企業は必ず応募しなければなりませんか？',
+                a: 'いいえ、強制は一切ありません。ご自身のキャリアビジョンに合う企業のみを選んで応募いただけます。',
+              },
+              {
+                q: 'トウコベでの指導実績がないと利用できませんか？',
+                a: '登録自体は可能です。ただし「特別選考ルート」などの一部特典は、一定の指導実績がある講師の方を優先してご案内する場合がございます。',
+              },
+            ].map((item, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div key={idx} className="border-b border-gray-200">
+                  <button
+                    onClick={() => toggleFaq(idx)}
+                    className="w-full text-left py-8 flex justify-between items-center focus:outline-none group"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="font-bold text-sm md:text-base flex items-center">
+                      <span className="text-[#FF7B44] mr-6 font-bold font-english text-xl">Q.</span>
+                      {item.q}
+                    </span>
+                    <span
+                      className={`text-2xl font-light text-gray-300 transition-colors duration-300 group-hover:text-[#FF7B44] ${
+                        isOpen ? 'text-[#FF7B44]' : ''
+                      }`}
+                    >
+                      {isOpen ? '−' : '+'}
+                    </span>
+                  </button>
+                  <div
+                    className="overflow-hidden transition-[max-height] duration-400 ease-out"
+                    style={{ maxHeight: isOpen ? '200px' : '0px' }}
+                  >
+                    <div className="pb-8 pl-12 text-sm text-gray-600 leading-loose">
+                      {item.a}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Closing CTA (Updated: Light orange background & Rect Buttons) */}
+      <section
+        id="contact"
+        className="py-24 md:py-32 px-6 bg-[#FFF2EB] flex flex-col items-center justify-center text-center relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.8),_transparent)] z-0" />
+        <div className="text-reveal scroll-trigger w-full flex flex-col items-center relative z-10">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-6 w-full justify-center">
+            <RectCtaButton
+              color="orange"
+              badgeText="無料"
+              subText="まずはここから"
+              mainText="イベントを確認する"
+              onClick={() => scrollToSection('contact')}
+            />
+            <RectCtaButton
+              color="green"
+              badgeText="無料"
+              subText="簡単1分で完了"
+              mainText="LINEで限定オファー"
+              onClick={() => scrollToSection('contact')}
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="bg-white text-slate-400 py-12 text-center text-xs border-t border-slate-100">
-         <img src="https://www.toukobe.com/wp-content/uploads/Group-164.png" alt="Logo" className="h-6 w-auto mx-auto mb-6 opacity-30 grayscale" />
-         <p>&copy; Copyright © 2026 MANABI Inc. All Rights Reserved.</p>
+      <footer className="bg-[#111] text-white py-16">
+        <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center md:items-end">
+          <div className="mb-8 md:mb-0 text-center md:text-left">
+            <img
+              src="https://www.toukobe.com/wp-content/uploads/Group-164.png"
+              alt="MANABI Inc."
+              className="h-8 w-auto brightness-0 invert mx-auto md:mx-0 mb-4 opacity-80"
+            />
+            <p className="text-[10px] text-gray-500 tracking-widest font-english">
+              &copy; Copyright © 2026 MANABI Inc. All Rights Reserved.
+            </p>
+          </div>
+        </div>
       </footer>
 
-      {/* Mobile Floating CTA */}
-      <div className={`fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 shadow-lg z-50 md:hidden flex justify-center gap-3 transition-transform duration-300 ${scrolled ? 'translate-y-0' : 'translate-y-full'}`}>
-        <button className="flex-1 bg-white border border-slate-200 text-slate-600 py-3 rounded-full font-bold text-xs">資料請求</button>
-        <button className="flex-[2] bg-[#FF8A32] text-white py-3 rounded-full font-bold text-sm shadow-md">会員登録 (無料)</button>
+      {/* Mobile Floating CTA (Updated) */}
+      <div
+        className={`fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.08)] z-50 md:hidden flex justify-center gap-2 transition-transform duration-300 ${
+          scrolled ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <button
+          onClick={() => scrollToSection('contact')}
+          className="flex-1 bg-[#FF7B44] text-white text-center py-3 rounded-md font-bold text-xs shadow-sm flex items-center justify-center gap-1 active:opacity-80"
+        >
+          イベントを確認する
+        </button>
+        <button
+          onClick={() => scrollToSection('contact')}
+          className="flex-[1.4] bg-[#06C755] text-white text-center py-3 rounded-md font-bold text-xs shadow-sm flex items-center justify-center gap-1 active:opacity-80"
+        >
+          LINEで限定オファーを受け取る
+        </button>
       </div>
-
     </div>
   );
 };
 
-export default ToukobeCareerLP;
+export default App;

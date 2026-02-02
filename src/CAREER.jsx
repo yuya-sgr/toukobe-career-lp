@@ -73,6 +73,17 @@ const App = () => {
     setOpenFaq(openFaq === index ? null : index);
   };
 
+  // Helper to calculate days remaining
+  const getDaysRemaining = (deadlineDateStr) => {
+    // For simulation/demo purposes, we fix "today" to 2026-02-02
+    // In a real app, use: const today = new Date();
+    const today = new Date('2026-02-02'); 
+    const deadline = new Date(deadlineDateStr);
+    const diffTime = deadline - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 0;
+  };
+
   // --------------------------------------------------------------------------
   // Refactored Single CTA Button Component (Green Only)
   // --------------------------------------------------------------------------
@@ -696,12 +707,16 @@ const App = () => {
             const events = [
               {
                 id: 'leverages-20260315',
-                deadline: '【締切】2/5（木）23:59',
+                // Deadline Date Logic:
+                // Assuming today is 2026-02-02 (Simulation)
+                // Deadline is 2026-02-05
+                // Days left should be 3
+                deadlineDate: '2026-02-05',
                 company: 'レバレジーズ',
                 title: '【参加謝礼3,000円】Leverages特別企業説明会',
-                desc: '年商1000億規模の急成長企業「レバレジーズ」が全面協力。就活の進め方レクチャー、GD練習、座談会。',
+                desc: '年商1,000億規模の急成長企業「レバレジーズ」が全面協力。就活の進め方レクチャー、GD練習、座談会を通じて、キャリア形成の第一歩を踏み出しませんか？',
                 meta: '90min / GD練習 / 座談会 / オンライン',
-                dateLabel: '2026.03.15',
+                dateLabel: '2026.02.15',
                 time: '18:00 - 19:30',
                 place: 'オンライン(Zoom)',
                 image:
@@ -714,60 +729,67 @@ const App = () => {
             return (
               <div className="relative">
                 <div className="flex gap-6 overflow-x-auto pb-3 snap-x snap-mandatory toukobe-scroll">
-                  {events.map((e) => (
-                    <div
-                      key={e.id}
-                      className="min-w-[320px] sm:min-w-[360px] md:min-w-[420px] bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start"
-                    >
-                      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                        <p className="text-sm font-bold text-[#FF7B44]">{e.deadline}</p>
-                      </div>
-
-                      <div className="relative">
-                        <div className="h-[150px] md:h-[170px] bg-gray-50 overflow-hidden">
-                          <img
-                            src={e.image}
-                            alt={e.title}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                          />
+                  {events.map((e) => {
+                    const daysLeft = getDaysRemaining(e.deadlineDate);
+                    return (
+                      <div
+                        key={e.id}
+                        className="w-[85vw] sm:w-[400px] md:w-[480px] shrink-0 bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start"
+                      >
+                        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                          <p className="text-sm font-bold text-[#FF7B44]">
+                            {`【申込締切】あと${daysLeft}日`}
+                          </p>
                         </div>
-                        <div className="absolute left-4 top-4 bg-white border border-gray-200 rounded-lg p-2 shadow-sm">
-                          <img
-                            src={e.logo}
-                            alt={`${e.company} ロゴ`}
-                            className="h-6 w-auto object-contain"
-                          />
-                        </div>
-                      </div>
 
-                      <div className="px-5 py-5">
-                        <p className="text-xs font-bold text-gray-500">{e.company}</p>
-                        <h3 className="mt-2 text-base md:text-lg font-bold text-black leading-snug">
-                          {e.title}
-                        </h3>
-                        <p className="mt-3 text-xs text-gray-500 leading-relaxed">{e.desc}</p>
-                        <p className="mt-4 text-xs text-gray-400 font-bold">{e.meta}</p>
-
-                        <div className="mt-5 flex items-center justify-between">
-                          <div className="text-xs text-gray-500 font-bold">
-                            <span className="font-english mr-2">{e.dateLabel}</span>
-                            <span className="mr-2">{e.time}</span>
-                            <span className="inline-flex items-center gap-1">
-                              <Globe size={14} /> {e.place}
-                            </span>
+                        <div className="relative">
+                          <div className="h-[200px] md:h-[240px] bg-gray-50 overflow-hidden">
+                            <img
+                              src={e.image}
+                              alt={e.title}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
                           </div>
-                          <button
-                            onClick={() => scrollToSection('contact')}
-                            className="inline-flex items-center gap-2 text-sm font-bold text-[#FF7B44] hover:opacity-70 transition-opacity"
-                          >
-                            詳細
-                            <ArrowRight size={16} />
-                          </button>
+                          <div className="absolute left-4 top-4 w-14 h-14 bg-white border border-gray-200 rounded-xl p-2 shadow-md flex items-center justify-center">
+                            <img
+                              src={e.logo}
+                              alt={`${e.company} ロゴ`}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="px-6 py-6">
+                          <p className="text-xs font-bold text-gray-500">{e.company}</p>
+                          <h3 className="mt-2 text-lg md:text-xl font-bold text-black leading-snug">
+                            {e.title}
+                          </h3>
+                          <p className="mt-3 text-sm text-gray-600 leading-relaxed whitespace-normal">
+                            {e.desc}
+                          </p>
+                          <p className="mt-4 text-xs text-gray-400 font-bold">{e.meta}</p>
+
+                          <div className="mt-6 flex items-center justify-between">
+                            <div className="text-xs text-gray-500 font-bold">
+                              <span className="font-english mr-3">{e.dateLabel}</span>
+                              <span className="mr-3">{e.time}</span>
+                              <span className="inline-flex items-center gap-1">
+                                <Globe size={14} /> {e.place}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => scrollToSection('contact')}
+                              className="inline-flex items-center gap-2 text-sm font-bold text-[#FF7B44] hover:opacity-70 transition-opacity"
+                            >
+                              詳細
+                              <ArrowRight size={16} />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-white to-transparent" />
               </div>
@@ -787,7 +809,8 @@ const App = () => {
             <p className="text-sm font-normal text-gray-400">(具体的なステップ)</p>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4 text-reveal scroll-trigger">
+          {/* Changed items-center to md:items-stretch to align card heights */}
+          <div className="flex flex-col md:flex-row md:items-stretch justify-between gap-8 md:gap-4 text-reveal scroll-trigger">
             {[
               {
                 no: '01',
@@ -835,7 +858,7 @@ const App = () => {
 
                 {/* Arrow (Render between items) */}
                 {index < array.length - 1 && (
-                  <div className="text-gray-300 flex-shrink-0">
+                  <div className="text-gray-300 flex-shrink-0 self-center">
                     <ArrowRight size={24} className="hidden md:block" />
                     <ArrowDown size={24} className="md:hidden" />
                   </div>

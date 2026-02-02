@@ -28,6 +28,10 @@ const App = () => {
   const [openFaq, setOpenFaq] = useState(null);
   const [activeTab, setActiveTab] = useState('prime');
 
+  // URL Constants
+  const LINE_URL = 'https://lin.ee/FHuYx9S';
+  const LEVERAGES_EVENT_URL = 'https://www.toukobe.com/career/leverages0215/';
+
   // Intersection Observer for scroll animations
   useEffect(() => {
     const observerOptions = {
@@ -71,6 +75,11 @@ const App = () => {
 
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
+  };
+
+  // Helper to open URLs
+  const openUrl = (url) => {
+    window.open(url, '_blank');
   };
 
   // Helper to calculate days remaining
@@ -262,24 +271,19 @@ const App = () => {
               ))}
             </div>
             
-            {/* Header CTA Button (2-line layout, shorter width) */}
+            {/* Header CTA Button (Modified: No "Free" badge/subtext) */}
             <div className="flex h-full items-center ml-4 py-1">
               <button
-                onClick={() => scrollToSection('contact')}
+                onClick={() => openUrl(LINE_URL)}
                 className="group h-full flex items-stretch shadow-sm hover:opacity-95 transition-opacity"
               >
-                {/* Side Label */}
-                <div className="w-10 bg-[#05B24A] text-white flex flex-col items-center justify-center text-xs font-bold leading-tight">
-                  <span>無</span>
-                  <span>料</span>
-                </div>
                 {/* Main Content */}
-                <div className="flex-1 bg-[#06C755] text-white flex items-center justify-between px-3 md:px-4">
+                <div className="flex-1 bg-[#06C755] text-white flex items-center justify-between px-4 md:px-5 rounded-md min-w-[200px]">
                   <div className="flex flex-col items-start justify-center h-full space-y-0.5 whitespace-nowrap">
-                    <span className="text-[10px] font-bold leading-tight">LINEで</span>
+                    <span className="text-[10px] font-bold leading-tight opacity-90">LINEで</span>
                     <span className="text-sm font-bold leading-tight">限定イベントを確認</span>
                   </div>
-                  <ChevronsRight size={20} strokeWidth={3} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  <ChevronsRight size={20} strokeWidth={3} className="ml-3 group-hover:translate-x-1 transition-transform" />
                 </div>
               </button>
             </div>
@@ -343,7 +347,7 @@ const App = () => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row flex-wrap gap-6">
-                  <MainCtaButton onClick={() => scrollToSection('contact')} />
+                  <MainCtaButton onClick={() => openUrl(LINE_URL)} />
                 </div>
               </div>
             </div>
@@ -369,10 +373,6 @@ const App = () => {
           <div className="absolute top-0 left-0 w-full h-full bg-black animate-scroll-line" />
         </div>
       </section>
-
-      {/* ---------------------------------------------------------------------
-          Refactored Section Order: Problem -> Solution -> Features -> Comparison -> Event
-         --------------------------------------------------------------------- */}
 
       {/* Problem Section (Refined Text) */}
       <section className="py-32 bg-[#F5F5F5] relative">
@@ -512,7 +512,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Comparison Section */}
+      {/* Comparison Section (Corrected Logic) */}
       <section className="py-28 md:py-40 bg-white">
         <div className="max-w-[980px] mx-auto px-6">
           <div className="text-reveal scroll-trigger mb-12 md:mb-16">
@@ -569,9 +569,6 @@ const App = () => {
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
                     {/* Left narrative */}
                     <div className="md:col-span-5">
-                      <span className="inline-flex items-center gap-2 px-3 py-1 bg-white text-gray-700 text-[10px] font-bold tracking-widest font-english border border-gray-200 rounded-full">
-                        STANDARD ROUTE
-                      </span>
                       <h3 className="mt-5 text-2xl font-bold text-black leading-snug">
                         多くの学生が通る<br />"競争の激しい"道のり
                       </h3>
@@ -628,9 +625,6 @@ const App = () => {
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
                     {/* Left narrative */}
                     <div className="md:col-span-5">
-                      <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#FFF2EB] text-[#FF7B44] text-[10px] font-bold tracking-widest font-english border border-[#FF7B44]/30 rounded-full">
-                        INVITATION ROUTE
-                      </span>
                       <h3 className="mt-5 text-2xl font-black text-[#FF7B44] leading-snug">
                         実績が評価される<br />"選ばれた人"の近道
                       </h3>
@@ -707,10 +701,6 @@ const App = () => {
             const events = [
               {
                 id: 'leverages-20260315',
-                // Deadline Date Logic:
-                // Assuming today is 2026-02-02 (Simulation)
-                // Deadline is 2026-02-05
-                // Days left should be 3
                 deadlineDate: '2026-02-05',
                 company: 'レバレジーズ',
                 title: '【参加謝礼3,000円】Leverages特別企業説明会',
@@ -734,7 +724,8 @@ const App = () => {
                     return (
                       <div
                         key={e.id}
-                        className="w-[85vw] sm:w-[400px] md:w-[480px] shrink-0 bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start"
+                        onClick={() => openUrl(LEVERAGES_EVENT_URL)}
+                        className="w-[85vw] sm:w-[400px] md:w-[480px] shrink-0 bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start cursor-pointer hover:shadow-lg transition-shadow"
                       >
                         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                           <p className="text-sm font-bold text-[#FF7B44]">
@@ -778,10 +769,7 @@ const App = () => {
                                 <Globe size={14} /> {e.place}
                               </span>
                             </div>
-                            <button
-                              onClick={() => scrollToSection('contact')}
-                              className="inline-flex items-center gap-2 text-sm font-bold text-[#FF7B44] hover:opacity-70 transition-opacity"
-                            >
+                            <button className="inline-flex items-center gap-2 text-sm font-bold text-[#FF7B44] hover:opacity-70 transition-opacity">
                               詳細
                               <ArrowRight size={16} />
                             </button>
@@ -798,7 +786,7 @@ const App = () => {
         </div>
       </section>
 
-      {/* Flow Section (Refactored) */}
+      {/* Flow Section */}
       <section id="flow" className="py-24 md:py-40 bg-white">
         <div className="max-w-[1000px] mx-auto px-6">
           <div className="text-center mb-16 text-reveal scroll-trigger">
@@ -809,7 +797,6 @@ const App = () => {
             <p className="text-sm font-normal text-gray-400">(具体的なステップ)</p>
           </div>
 
-          {/* Changed items-center to md:items-stretch to align card heights */}
           <div className="flex flex-col md:flex-row md:items-stretch justify-between gap-8 md:gap-4 text-reveal scroll-trigger">
             {[
               {
@@ -842,11 +829,11 @@ const App = () => {
                   <h3 className="relative z-10 text-lg font-bold mb-3 text-[#111111]">{p.title}</h3>
                   <p className="relative z-10 text-xs text-gray-500 leading-relaxed font-medium">{p.desc}</p>
                   
-                  {/* CTA Button in 1st Box - Simplified version */}
+                  {/* CTA Button in 1st Box */}
                   {index === 0 && (
                     <div className="mt-6 w-full flex justify-center">
                       <MainCtaButton 
-                        onClick={() => scrollToSection('contact')} 
+                        onClick={() => openUrl(LINE_URL)}
                         small={true} 
                         mainText="友だち追加" 
                         showSubtext={false} 
@@ -856,7 +843,6 @@ const App = () => {
                   )}
                 </div>
 
-                {/* Arrow (Render between items) */}
                 {index < array.length - 1 && (
                   <div className="text-gray-300 flex-shrink-0 self-center">
                     <ArrowRight size={24} className="hidden md:block" />
@@ -912,7 +898,6 @@ const App = () => {
                       {isOpen ? '−' : '+'}
                     </span>
                   </button>
-                  {/* Grid transition implementation */}
                   <div
                     className={`grid transition-[grid-template-rows] duration-300 ease-out ${
                       isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
@@ -931,14 +916,14 @@ const App = () => {
         </div>
       </section>
 
-      {/* Closing CTA - Unified */}
+      {/* Closing CTA */}
       <section
         id="contact"
         className="py-24 md:py-32 px-6 bg-[#FFF2EB] flex flex-col items-center justify-center text-center relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.8),_transparent)] z-0" />
         <div className="text-reveal scroll-trigger w-full flex flex-col items-center relative z-10">
-          <MainCtaButton onClick={() => scrollToSection('contact')} />
+          <MainCtaButton onClick={() => openUrl(LINE_URL)} />
         </div>
       </section>
 
@@ -958,14 +943,14 @@ const App = () => {
         </div>
       </footer>
 
-      {/* Mobile Floating CTA - Unified & Full Width */}
+      {/* Mobile Floating CTA */}
       <div
         className={`fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 py-3 shadow-[0_-5px_20px_rgba(0,0,0,0.08)] z-50 md:hidden flex justify-center transition-transform duration-300 ${
           scrolled ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         <button
-          onClick={() => scrollToSection('contact')}
+          onClick={() => openUrl(LINE_URL)}
           className="w-full bg-[#06C755] text-white text-center py-4 rounded-lg font-bold text-sm shadow-md flex items-center justify-center gap-2 active:opacity-90 active:scale-[0.98] transition-all"
         >
           <img 

@@ -83,14 +83,13 @@ const App = () => {
   };
 
   // Helper to calculate days remaining
+  // 修正：残り日数をそのまま返し、判定は表示側で行うように変更
   const getDaysRemaining = (deadlineDateStr) => {
-    // For simulation/demo purposes, we fix "today" to 2026-02-02
-    // In a real app, use: const today = new Date();
-    const today = new Date('2026-02-02'); 
+    const today = new Date();
     const deadline = new Date(deadlineDateStr);
     const diffTime = deadline - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays > 0 ? diffDays : 0;
+    // 切り上げで計算（例: 残り0.5日→あと1日）
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
   // --------------------------------------------------------------------------
@@ -271,19 +270,26 @@ const App = () => {
               ))}
             </div>
             
-            {/* Header CTA Button (Modified: No "Free" badge/subtext) */}
+            {/* Header CTA Button (2-line layout, shorter width) */}
             <div className="flex h-full items-center ml-4 py-1">
               <button
                 onClick={() => openUrl(LINE_URL)}
                 className="group h-full flex items-stretch shadow-sm hover:opacity-95 transition-opacity"
               >
-                {/* Main Content */}
-                <div className="flex-1 bg-[#06C755] text-white flex items-center justify-between px-4 md:px-5 rounded-md min-w-[200px]">
+                {/* Side Label (左側の「無料」ラベル) */}
+                <div className="w-10 bg-[#05B24A] text-white flex flex-col items-center justify-center text-xs font-bold leading-tight">
+                  <span>無</span>
+                  <span>料</span>
+                </div>
+
+                {/* Main Content (右側の緑背景部分) */}
+                <div className="flex-1 bg-[#06C755] text-white flex items-center justify-between px-3 md:px-4">
                   <div className="flex flex-col items-start justify-center h-full space-y-0.5 whitespace-nowrap">
-                    <span className="text-[10px] font-bold leading-tight opacity-90">LINEで</span>
+                    <span className="text-[10px] font-bold leading-tight">LINEで</span>
                     <span className="text-sm font-bold leading-tight">限定イベントを確認</span>
                   </div>
-                  <ChevronsRight size={20} strokeWidth={3} className="ml-3 group-hover:translate-x-1 transition-transform" />
+                  {/* 矢印アイコン */}
+                  <ChevronsRight size={20} strokeWidth={3} className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </button>
             </div>
@@ -298,7 +304,7 @@ const App = () => {
           <img
             src="https://www.toukobe.com/wp-content/uploads/Group-164.png"
             alt="TOUKOBE CAREER"
-            className="h-6 w-auto object-contain"
+            className="h-[34px] w-auto object-contain"
           />
         </div>
 
@@ -721,6 +727,8 @@ const App = () => {
                 <div className="flex gap-6 overflow-x-auto pb-3 snap-x snap-mandatory toukobe-scroll">
                   {events.map((e) => {
                     const daysLeft = getDaysRemaining(e.deadlineDate);
+                    const isExpired = daysLeft <= 0; // 締切判定
+
                     return (
                       <div
                         key={e.id}
@@ -728,8 +736,12 @@ const App = () => {
                         className="w-[85vw] sm:w-[400px] md:w-[480px] shrink-0 bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start cursor-pointer hover:shadow-lg transition-shadow"
                       >
                         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                          <p className="text-sm font-bold text-[#FF7B44]">
-                            {`【申込締切】あと${daysLeft}日`}
+                          {/* 締切判定によって表示とスタイルを切り替え */}
+                          <p className={`text-sm font-bold ${isExpired ? 'text-gray-500' : 'text-[#FF7B44]'}`}>
+                            {isExpired 
+                              ? '【申込締切】受付終了' 
+                              : `【申込締切】あと${daysLeft}日`
+                            }
                           </p>
                         </div>
 
@@ -898,6 +910,7 @@ const App = () => {
                       {isOpen ? '−' : '+'}
                     </span>
                   </button>
+                  {/* Grid transition implementation */}
                   <div
                     className={`grid transition-[grid-template-rows] duration-300 ease-out ${
                       isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'

@@ -707,7 +707,7 @@ const App = () => {
             const events = [
               {
                 id: 'leverages-20260315',
-                deadlineDate: '2026-02-05',
+                deadlineDate: '2026-02-12',
                 company: 'レバレジーズ',
                 title: '【参加謝礼3,000円】Leverages特別企業説明会',
                 desc: '年商1,000億規模の急成長企業「レバレジーズ」が全面協力。就活の進め方レクチャー、GD練習、座談会を通じて、キャリア形成の第一歩を踏み出しませんか？',

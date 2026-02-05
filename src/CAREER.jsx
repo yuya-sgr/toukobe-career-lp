@@ -83,13 +83,14 @@ const App = () => {
   };
 
   // Helper to calculate days remaining
-  // 修正：残り日数をそのまま返し、判定は表示側で行うように変更
   const getDaysRemaining = (deadlineDateStr) => {
-    const today = new Date();
+    // For simulation/demo purposes, we fix "today" to 2026-02-02
+    // In a real app, use: const today = new Date();
+    const today = new Date('2026-02-02'); 
     const deadline = new Date(deadlineDateStr);
     const diffTime = deadline - today;
-    // 切り上げで計算（例: 残り0.5日→あと1日）
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 0;
   };
 
   // --------------------------------------------------------------------------
@@ -727,8 +728,6 @@ const App = () => {
                 <div className="flex gap-6 overflow-x-auto pb-3 snap-x snap-mandatory toukobe-scroll">
                   {events.map((e) => {
                     const daysLeft = getDaysRemaining(e.deadlineDate);
-                    const isExpired = daysLeft <= 0; // 締切判定
-
                     return (
                       <div
                         key={e.id}
@@ -736,12 +735,8 @@ const App = () => {
                         className="w-[85vw] sm:w-[400px] md:w-[480px] shrink-0 bg-white border border-gray-200 rounded-lg shadow-[0_10px_30px_rgba(0,0,0,0.04)] overflow-hidden snap-start cursor-pointer hover:shadow-lg transition-shadow"
                       >
                         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                          {/* 締切判定によって表示とスタイルを切り替え */}
-                          <p className={`text-sm font-bold ${isExpired ? 'text-gray-500' : 'text-[#FF7B44]'}`}>
-                            {isExpired 
-                              ? '【申込締切】受付終了' 
-                              : `【申込締切】あと${daysLeft}日`
-                            }
+                          <p className="text-sm font-bold text-[#FF7B44]">
+                            {`【申込締切】あと${daysLeft}日`}
                           </p>
                         </div>
 
